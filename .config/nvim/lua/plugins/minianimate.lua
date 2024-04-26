@@ -16,6 +16,13 @@ return {
 
       local animate = require("mini.animate")
       return {
+        -- Window open/close not working with transparent background
+        open = {
+          enable = false
+        },
+        close = {
+          enable = false
+        },
         resize = {
           timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
         },
