@@ -3,18 +3,9 @@ local function is_git_repo()
   return vim.v.shell_error == 0
 end
 
-local function get_project_root()
-  local names = { '.git', 'package.json', 'composer.json' }
-
-  for _, name in ipairs(names) do
-    local path = vim.fn.finddir(name, ".;")
-
-    if path ~= '' then
-      return vim.fn.fnamemodify(path, ":h")
-    end
-  end
-
-  return nil -- vim.fn.getcwd()
+local function get_git_root()
+  local dot_git_path = vim.fn.finddir(".git", ".;")
+  return vim.fn.fnamemodify(dot_git_path, ":h")
 end
 
 return {
@@ -23,63 +14,81 @@ return {
     dependencies = {
       {
         'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build'
+        build = 'make'
       }
     },
     keys = {
       {
-        "<leader>fp",
+        "<leader>.",
         function()
-          local root = get_project_root()
-          if root then opts = { cwd = root } end
+          require("telescope.builtin").find_files({ cwd = vim.fn.expand('%:p:h') })
+        end,
+        desc = "Find files from current directory (Telescope)",
+      },
+      {
+        "<leader>p",
+        function()
+          local opts = {}
+          if is_git_repo() then opts.cwd = get_git_root() end
           require("telescope.builtin").find_files(opts)
         end,
-        "Find project files (Telescope)"
+        desc = "Find project files (Telescope)",
       },
       {
-        "<leader>ff",
+        "<leader>f",
         function()
-          local root = get_project_root()
-          if root then opts = { cwd = root } end
+          local opts = {}
+          if is_git_repo() then opts.cwd = get_git_root() end
           require("telescope.builtin").live_grep(opts)
         end,
-        "Ripgrep project files (Telescope)"
+        desc = "Ripgrep project files (Telescope)",
       },
       {
-        "<leader>fb",
-        function()
-          require("telescope.builtin").buffers(
-            require('telescope.themes').get_dropdown({
-              previewer = false
-            })
-          )
-        end,
-        "Find buffers (Telescope)"
+        "<leader>b",
+        function() require("telescope.builtin").buffers() end,
+        desc = "Find buffers (Telescope)",
       },
-      opts = {
+    },
+    config = function()
+      local actions = require('telescope.actions')
+      local opts = {
         defaults = {
-          layout_strategy = "horizontal",
-          layout_config = { prompt_position = "bottom" },
-          sorting_strategy = "ascending",
-          buffer_previewer_maker = function(filepath, bufnr, opts)
-            opts = opts or {}
-
-            filepath = vim.fn.expand(filepath)
-            vim.loop.fs_stat(filepath, function(_, stat)
-              if not stat then return end
-              if stat.size > 10000 then
-                return
-              else
-                require("telescope.previewers").buffer_previewer_maker(filepath, bufnr, opts)
-              end
-            end)
-          end,
+          path_display = {
+            shorten = 5,
+            truncate = 3
+          },
+          vimgrep_arguments = {
+            "rg", "--color=never", "--no-heading", "--with-filename",
+            "--line-number", "--column", "--smart-case", "--trim",
+            "--hidden", "--glob", "!**/.git/*"
+          },
+          mappings = {
+            i = {
+              ["<esc>"] = actions.close
+            }
+          },
+          preview = {
+            filesize_limit = 1 -- MB
+          },
         },
-      },
-      config = function(_, opts)
-        require('telescope').load_extension('fzf')
-        require('telescope').setup(opts)
-      end
-    }
+        pickers = {
+          buffers = {
+            mappings = {
+              i = {
+                ["<c-d>"] = actions.delete_buffer + actions.move_to_top,
+              }
+            }
+          },
+          find_files = {
+            find_command = {
+              "rg", "--files", "--hidden", "--glob", "!**/.git/*"
+            },
+          }
+        }
+      }
+
+      require('telescope').load_extension('fzf')
+      require('telescope').setup(opts)
+    end
   }
 }

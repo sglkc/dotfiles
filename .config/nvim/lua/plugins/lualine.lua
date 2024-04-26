@@ -97,8 +97,8 @@ return {
             },
           },
           lualine_y = {
-            { 'fileformat', separator = "", padding = { left = 1, right = 0 } },
-            { 'encoding', padding = 1 },
+            { 'fileformat', separator = "", padding = 1 },
+            { 'encoding', padding = { left = 0, right = 1 } },
             { 'filetype', colored = false },
           },
           lualine_z = {
