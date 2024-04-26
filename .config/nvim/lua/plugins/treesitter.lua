@@ -3,6 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       'windwp/nvim-ts-autotag',
+      -- 'hiphish/rainbow-delimiters.nvim',
       {
         'andymass/vim-matchup',
         lazy = false,
@@ -18,7 +19,7 @@ return {
     cmd = { "TSUpdateSync", "TSUpdate", "TSInstall", "TSUninstall" },
     opts = {
       ensure_installed = {
-        "comment", "todotxt",
+        --[[ "comment", ]] "todotxt",
         "bash",
         "python",
         "html", "javascript", "jsdoc", "css", "typescript",
@@ -45,7 +46,7 @@ return {
         end,
       },
       autotag = {
-        enable = false,
+        enable = true,
         enable_close_on_slash = true,
         enable_rename = true,
         filetypes = {

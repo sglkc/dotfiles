@@ -7,9 +7,9 @@ return {
       'kyazdani42/nvim-web-devicons'
     },
     keys = {
-      { 'bn', '<cmd>BufferNext<cr>', 'Next buffer (barbar)' },
-      { 'bp', '<cmd>BufferPrevious<cr>', 'Previous buffer (barbar)' },
-      { 'bd', '<cmd>BufferClose<cr>', 'Close buffer gracefully (barbar)' },
+      { 'bn', '<cmd>BufferNext<cr>', desc = 'buffer next' },
+      { 'bp', '<cmd>BufferPrevious<cr>', desc = 'buffer previous' },
+      { 'bd', '<cmd>BufferClose<cr>', desc = 'buffer close' },
     },
     init = function() vim.g.barbar_auto_setup = false end,
     opts = {
