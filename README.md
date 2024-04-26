@@ -3,13 +3,13 @@ Repo to manage my dotfiles
 Use [GNU Stow](https://www.gnu.org/software/stow/)
 
 ```sh
-git clone git@github.com:sglkc/dotfiles
+git clone https://github.com/sglkc/dotfiles.git
 cd dotfiles
 stow .
 ```
 
-OR specify packages
+OR use Perl regex to filter out
 
 ```sh
-stow nvim vim
+stow -v . --filter="input|kitty"
 ```
