@@ -3,8 +3,8 @@ return {
     "numToStr/Comment.nvim",
     event = "ModeChanged *:[vV\x16]",
     keys = {
-      { "gcc", desc = "line comment" },
-      { "gbc", desc = "block comment" }
+      { "gc", desc = "line comment" },
+      { "gb", desc = "block comment" }
     },
     config = function()
       require('Comment').setup()
