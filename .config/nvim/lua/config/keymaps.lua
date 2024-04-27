@@ -44,3 +44,21 @@ map('n', '<A-Del>', '"_df ')                        -- delete front word until s
 map('i', '<A-Del>', '<Esc><Right>"_df i')           -- delete front word until space insert mode
 map('n', '<S-Del>', '"_df ')                        -- delete front word until space
 map('i', '<S-Del>', '<Esc><Right>"_df i')           -- delete front word until space insert mode
+
+-- Compile
+function _G.keymappingCompile()
+  local ft = vim.bo.filetype
+  local cmds = {
+    javascript = 'node %',
+    typescript = 'tsx %',
+    go = 'go run .',
+    java = 'javac %; java -cp %:p:h %:t:r',
+    python = 'python %:p:t',
+  }
+
+  if cmds[ft] then
+    vim.cmd("!" .. cmds[ft])
+  end
+end
+
+map('n', '<leader>c', ':lua keymappingCompile()<CR>')
