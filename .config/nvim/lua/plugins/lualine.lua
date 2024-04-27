@@ -22,7 +22,7 @@ return {
           component_separators = { left = '' , right = '' },
           disabled_filetypes = {
             statusline = {
-              "dashboard", "alpha", "starter"
+              "dashboard", "alpha", "starter", "NvimTree", "help",
             }
           }
         },

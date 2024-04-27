@@ -9,7 +9,7 @@ return {
       "hrsh7th/cmp-path",
       "saadparwaiz1/cmp_luasnip",
       {
-        "L3M0N4D3/LuaSnip",
+        "L3MON4D3/LuaSnip",
         dependencies = {
           {
             "rafamadriz/friendly-snippets",
