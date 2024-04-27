@@ -10,6 +10,8 @@ return {
       { 'bn', '<cmd>BufferNext<cr>', desc = 'buffer next' },
       { 'bp', '<cmd>BufferPrevious<cr>', desc = 'buffer previous' },
       { 'bd', '<cmd>BufferClose<cr>', desc = 'buffer close' },
+      { '<A-Left>', '<cmd>BufferMovePrevious<cr>', desc = 'buffer move left' },
+      { '<A-Right>', '<cmd>BufferMoveNext<cr>', desc = 'buffer move right' },
     },
     init = function() vim.g.barbar_auto_setup = false end,
     opts = {
