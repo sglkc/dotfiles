@@ -1,7 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "VeryLazy" },
+    event = { "BufReadPost", "BufEnter" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
     },
@@ -51,7 +51,13 @@ return {
     config = function(_, opts)
       local cmp_nvim_lsp = require('cmp_nvim_lsp')
       local capabilities = vim.lsp.protocol.make_client_capabilities()
+
       capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
+
+      -- TODO: move autocmd to buffer
+      vim.cmd([[
+        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focus = false })
+      ]])
 
       -- Use an on_attach function to only map the following keys
       -- after the language server attaches to the current buffer
@@ -62,12 +68,12 @@ return {
         -- Highlighting references
         if client.server_capabilities.document_highlight then
           vim.api.nvim_exec([[
-      augroup lsp_document_highlight
-      autocmd! * <buffer>
-      autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-      autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-      ]], false)
+          augroup lsp_document_highlight
+          autocmd! * <buffer>
+          autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+          autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+          augroup END
+          ]], false)
         end
 
         -- Enable completion triggered by <c-x><c-o>
@@ -128,10 +134,12 @@ return {
 
       local ensure_installed = {}
       for _, server in ipairs(servers) do
-        local server_opts = vim.tbl_deep_extend("force", {
-          root_dir = root_dir,
-          capabilities = vim.deepcopy(capabilities),
-        }, servers[server] or {})
+        local server_opts = vim.tbl_deep_extend(
+          "force",
+          { root_dir = root_dir, capabilities = vim.deepcopy(capabilities) },
+          servers[server] or {},
+          opts.setup[server] or {}
+        )
         require("lspconfig")[server].setup(server_opts)
       end
 
