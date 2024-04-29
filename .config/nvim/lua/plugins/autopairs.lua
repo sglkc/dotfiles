@@ -48,18 +48,14 @@ return {
             return utils.create_act{ { 'delete', 1, 2 } }
           end
         end
-        m.get_map=function (mode) if mode == 'i' then return {'<bs>'} end end
+        m.get_map = function (mode) if mode == 'i' then return {'<bs>'} end end
         return m
       end
 
       require'ultimate-autopair'.init({
-        require'ultimate-autopair'.extend_default({
-          {'{','},',disable_start=true,disable_end=true,p=11},
-          {'[','],',disable_start=true,disable_end=true,p=11},
-          {'(','),',disable_start=true,disable_end=true,p=11},
-        }),
+        require'ultimate-autopair'.extend_default(opts),
         { profile='raw', auto_comma() },
-        { profile='raw', trailing_comma() }
+        { profile='raw', trailing_comma() },
       })
     end
   }
