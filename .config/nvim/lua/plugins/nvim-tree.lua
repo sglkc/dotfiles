@@ -4,14 +4,17 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
-    cmd = "NvimTree",
+    cmd = { "NvimTree" },
     keys = {
       {
         '<leader>n',
         function ()
           local nvimTree = require("nvim-tree.api")
           local currentBuf = vim.api.nvim_get_current_buf()
-          local currentBufFt = vim.api.nvim_get_option_value("filetype", { buf = currentBuf })
+          local currentBufFt = vim.api.nvim_get_option_value(
+            "filetype",
+            { buf = currentBuf }
+          )
           if currentBufFt == "NvimTree" then
             nvimTree.tree.toggle()
           else
@@ -20,6 +23,26 @@ return {
         end
       }
     },
+    init = function()
+      local arg = vim.fn.argv(0)
+      local stat = vim.uv.fs_stat(arg)
+      local opts = {
+        focus = true,
+        find_file = false,
+      }
+      if (stat and stat.type == "directory") then
+        require("nvim-tree.api").tree.open({
+          path = arg, focus = false, find_file = false
+        })
+      elseif (arg == "") then
+        require("nvim-tree.api").tree.open({
+          path = vim.loop.cwd(), focus = false, find_file = false
+        })
+        vim.cmd([[terminal]])
+      else
+        return
+      end
+    end,
     opts = {
       on_attach = function(bufnr)
         local api = require('nvim-tree.api')
