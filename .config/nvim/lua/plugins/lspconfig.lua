@@ -1,7 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
-    event = { "BufReadPost", "BufEnter" },
+    lazy = false,
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
     },
@@ -136,14 +136,16 @@ return {
       for _, server in ipairs(servers) do
         local server_opts = vim.tbl_deep_extend(
           "force",
-          { root_dir = root_dir, capabilities = vim.deepcopy(capabilities) },
-          servers[server] or {},
+          {
+            on_attach = on_attach,
+            root_dir = root_dir,
+            capabilities = vim.deepcopy(capabilities),
+          },
           opts.setup[server] or {}
         )
+
         require("lspconfig")[server].setup(server_opts)
       end
-
-      vim.lsp.set_log_level("off")
     end
   }
 }
