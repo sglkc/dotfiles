@@ -45,8 +45,8 @@ map('i', '<A-Del>', '<Esc><Right>"_df i')           -- delete front word until s
 map('n', '<S-Del>', '"_df ')                        -- delete front word until space
 map('i', '<S-Del>', '<Esc><Right>"_df i')           -- delete front word until space insert mode
 
--- Compile
-function _G.keymappingCompile()
+-- Compile & Run
+_G.compileAndRun = function()
   local ft = vim.bo.filetype
   local cmds = {
     javascript = 'node %',
@@ -57,8 +57,11 @@ function _G.keymappingCompile()
   }
 
   if cmds[ft] then
+    vim.cmd(":w")
     vim.cmd("!" .. cmds[ft])
+  else
+    vim.print("Run command not found for " .. ft)
   end
 end
 
-map('n', '<leader>c', ':lua keymappingCompile()<CR>')
+map('n', '<leader>c', ':lua compileAndRun()<CR>')
