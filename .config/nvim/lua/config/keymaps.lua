@@ -27,11 +27,17 @@ map('n', 'ww', '<C-w><C-w>')
 map('n', 'wW', '<C-w><S-w>')
 map('n', 'wq', '<C-w><C-q>')
 
+-- Small scroll
+map('n', '<C-Up>', '<C-U>')
+map('i', '<C-Up>', '<C-o><C-U>')
+map('n', '<C-Down>', '<C-D>')
+map('i', '<C-Down>', '<C-o><C-D>')
+
 -- Move current line
-map('n', '<C-Up>', ':m -2<CR>')
-map('i', '<C-Up>', '<Esc>:m -2<CR>a')
-map('n', '<C-Down>', ':m +1<CR>')
-map('i', '<C-Down>', '<Esc>:m +1<CR>a')
+map('n', '<A-Up>', ':m -2<CR>')
+map('i', '<A-Up>', '<Esc>:m -2<CR>a')
+map('n', '<A-Down>', ':m +1<CR>')
+map('i', '<A-Down>', '<Esc>:m +1<CR>a')
 
 -- Delete words
 map('n', '<A-BS>', '"_dF ')                         -- delete back word until space
