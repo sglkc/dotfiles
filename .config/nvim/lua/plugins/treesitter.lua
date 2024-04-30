@@ -3,6 +3,7 @@ return {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
       'windwp/nvim-ts-autotag',
+      'RRethy/nvim-treesitter-endwise',
       -- 'hiphish/rainbow-delimiters.nvim',
       {
         'andymass/vim-matchup',
@@ -62,6 +63,9 @@ return {
         enable = true
       },
       matchup = {
+        enable = true
+      },
+      endwise = {
         enable = true
       }
     },

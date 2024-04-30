@@ -4,7 +4,9 @@ return {
     -- event = { 'InsertEnter', 'CmdlineEnter' },
     lazy = false,
     branch = 'v0.6', --recommended as each new version will have breaking changes
-    opts = {},
+    opts = {
+      { '>', '<', disable_start = true, disable_end = true, newline = true , p = 11 },
+    },
     config = function(_, opts)
       -- https://github.com/altermo/ultimate-autopair.nvim/issues/46
       local default = require'ultimate-autopair.profile.default.utils'

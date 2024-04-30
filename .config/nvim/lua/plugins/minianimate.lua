@@ -4,12 +4,15 @@ return {
     event = 'VeryLazy',
     version = false,
     opts = function()
-      -- don't use animate when scrolling with the mouse
-      local mouse_scrolled = false
-      for _, scroll in ipairs({ "Up", "Down" }) do
-        local key = "<ScrollWheel" .. scroll .. ">"
+      -- don't use animate when using the mouse
+      local ignored_keys = {
+        "ScrollWheelUp", "ScrollWheelDown", "LeftMouse", "RightMouse"
+      }
+      local ignore = false
+
+      for _, key in ipairs(ignored_keys) do
         vim.keymap.set({ "", "i" }, key, function()
-          mouse_scrolled = true
+          ignore = true
           return key
         end, { expr = true })
       end
@@ -24,14 +27,14 @@ return {
           enable = false
         },
         resize = {
-          timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+          timing = animate.gen_timing.cubic({ duration = 50, unit = "total" }),
         },
         scroll = {
           timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
           subscroll = animate.gen_subscroll.equal({
             predicate = function(total_scroll)
-              if mouse_scrolled then
-                mouse_scrolled = false
+              if ignore then
+                ignore = false
                 return false
               end
               return total_scroll > 1
