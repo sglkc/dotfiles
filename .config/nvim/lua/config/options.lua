@@ -17,7 +17,7 @@ opt.shiftwidth = 2
 opt.shiftround = true
 opt.tabstop = 2
 opt.expandtab = true
-opt.wrap = false
+opt.wrap = true
 opt.linebreak = true
 
 -- UI

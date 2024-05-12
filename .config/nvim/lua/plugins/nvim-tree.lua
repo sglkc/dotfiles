@@ -23,26 +23,26 @@ return {
         end
       }
     },
-    init = function()
-      local arg = vim.fn.argv(0)
-      local stat = vim.uv.fs_stat(arg)
-      local opts = {
-        focus = true,
-        find_file = false,
-      }
-      if (stat and stat.type == "directory") then
-        require("nvim-tree.api").tree.open({
-          path = arg, focus = false, find_file = false
-        })
-      elseif (arg == "") then
-        require("nvim-tree.api").tree.open({
-          path = vim.loop.cwd(), focus = false, find_file = false
-        })
-        vim.cmd([[terminal]])
-      else
-        return
-      end
-    end,
+    -- init = function()
+    --   local arg = vim.fn.argv(0)
+    --   local stat = vim.uv.fs_stat(arg)
+    --   local opts = {
+    --     focus = true,
+    --     find_file = false,
+    --   }
+    --   if (stat and stat.type == "directory") then
+    --     require("nvim-tree.api").tree.open({
+    --       path = arg, focus = false, find_file = false
+    --     })
+    --   elseif (arg == "") then
+    --     require("nvim-tree.api").tree.open({
+    --       path = vim.loop.cwd(), focus = false, find_file = false
+    --     })
+    --     vim.cmd([[terminal]])
+    --   else
+    --     return
+    --   end
+    -- end,
     opts = {
       on_attach = function(bufnr)
         local api = require('nvim-tree.api')
@@ -51,6 +51,7 @@ return {
         end
 
         set_hl('NvimTreeWinSeparator', { link = 'WinSeparator' })
+        set_hl('NvimTreeExecFile', { link = 'Normal' })
         set_hl('NvimTreeIndentMarker', { fg = '#c8d3f5' })
         set_hl('NvimTreeGitNew', { fg = '#bfcfff' })
         set_hl('NvimTreeGitDirty', { fg = '#ffc777' })

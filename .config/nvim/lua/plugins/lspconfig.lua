@@ -57,6 +57,7 @@ return {
       -- TODO: move autocmd to buffer
       vim.cmd([[
         autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focus = false })
+        hi! def link DiagnosicUnnecessary Comment
       ]])
 
       -- Use an on_attach function to only map the following keys

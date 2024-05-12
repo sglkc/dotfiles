@@ -60,6 +60,7 @@ _G.compileAndRun = function()
     go = 'go run .',
     java = 'javac %; java -cp %:p:h %:t:r',
     python = 'python %:p:t',
+    php = 'php %'
   }
 
   if cmds[ft] then
