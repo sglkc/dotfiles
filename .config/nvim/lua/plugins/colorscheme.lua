@@ -29,7 +29,9 @@ return {
       },
       on_highlights = function(hl, c)
         hl.LineNr = { fg='#485f72' }
-        hl.CursorLineNr = { fg='#848cba' }
+        hl.CursorLineNr = { link='CursorLine' }
+        hl.LineNrAbove = { fg='#848cba' }
+        hl.LineNrBelow = { link='LineNrAbove' }
         hl.WinSeparator = { fg='#505c5c' }
         hl.Search = { bg='#ffcb8b', fg='#112630' }
       end
