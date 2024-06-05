@@ -4,7 +4,7 @@ return {
     event = 'VeryLazy',
     dependencies = {
       'lewis6991/gitsigns.nvim',
-      'kyazdani42/nvim-web-devicons'
+      'nvim-tree/nvim-web-devicons'
     },
     keys = {
       { 'bn', '<cmd>BufferNext<cr>', desc = 'buffer next' },
