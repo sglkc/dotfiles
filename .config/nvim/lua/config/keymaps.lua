@@ -26,6 +26,8 @@ map('n', 'bd', ':bd<CR>')
 map('n', 'ww', '<C-w><C-w>')
 map('n', 'wW', '<C-w><S-w>')
 map('n', 'wq', '<C-w><C-q>')
+map('n', 'w<Left>', '<C-w><Left>')
+map('n', 'w<Right>', '<C-w><Right>')
 
 -- Small scroll
 map('n', '<C-Up>', '<C-U>')

@@ -34,6 +34,7 @@ return {
         hl.LineNrBelow = { link='LineNrAbove' }
         hl.WinSeparator = { fg='#505c5c' }
         hl.Search = { bg='#ffcb8b', fg='#112630' }
+        hl.DiagnosticUnnecessary = { link='Comment' }
       end
     },
     config = function (_, opts)
