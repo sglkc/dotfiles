@@ -27,7 +27,6 @@ return {
       "onsails/lspkind.nvim"
     },
     opts = function()
-      vim.api.nvim_set_hl(0, "CmpGhostText", { link = "Comment", default = true })
       vim.api.nvim_set_hl(0, 'CmpItemAbbrDeprecated', { bg='NONE', strikethrough=true, fg='#808080' })
       vim.api.nvim_set_hl(0, 'CmpItemAbbrMatch', { bg='NONE', fg='#569CD6' })
       vim.api.nvim_set_hl(0, 'CmpItemAbbrMatchFuzzy', { link='CmpIntemAbbrMatch' })
@@ -110,11 +109,6 @@ return {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
           }),
-        },
-        experimental = {
-          ghost_text = {
-            hl_group = "CmpGhostText",
-          },
         },
       }
     end,
