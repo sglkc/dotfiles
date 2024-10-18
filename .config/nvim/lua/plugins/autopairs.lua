@@ -5,7 +5,7 @@ return {
     lazy = false,
     branch = 'v0.6', --recommended as each new version will have breaking changes
     opts = {
-      { '>', '<', disable_start = true, disable_end = true, newline = true , p = 11 },
+      { '>', '<', newline = true , disable_start = true, p = 11 },
     },
     config = function(_, opts)
       -- https://github.com/altermo/ultimate-autopair.nvim/issues/46

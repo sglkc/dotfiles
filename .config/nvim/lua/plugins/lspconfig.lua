@@ -1,6 +1,7 @@
 return {
   {
     "neovim/nvim-lspconfig",
+    commit = '5408121379b45f7f64626d77f7a62237dadbde82',
     lazy = false,
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
@@ -9,23 +10,31 @@ return {
       diagnostics = {
         update_in_insert = true,
         underline = true,
-        signs = false,
+        signs = {
+          text = {
+            [vim.diagnostic.severity.ERROR] = '',
+            [vim.diagnostic.severity.WARN] = '',
+            [vim.diagnostic.severity.INFO] = '',
+            [vim.diagnostic.severity.HINT] = '',
+          },
+          linehl = {},
+          numhl = {
+            [vim.diagnostic.severity.WARN] = 'WarningMsg',
+            [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+          },
+        },
         severity_sort = true,
         virtual_text = {
           format = function(d)
-            if d.severity == vim.diagnostic.severity.INFO then
-              return string.sub(d.message, 1, 25) .. '…'
-            end;
-            if d.severity == vim.diagnostic.severity.HINT then
-              return string.sub(d.message, 1, 25) .. '…'
-            end;
-            return string.format('%s', d.message)
+            if d.severity == vim.diagnostic.severity.ERROR then
+              return d.message
+            end
+            return string.sub(d.message, 1, 25) .. '…'
           end,
           prefix = '▣',
           source = 'if_many',
         },
         float = {
-          focusable = false,
           border = "rounded",
           source = "if_many",
           header = "",
@@ -34,9 +43,11 @@ return {
       },
       capabilities = {},
       servers = {
-        'pyright', 'clangd',
-        'astro', 'html', 'cssls', 'intelephense', 'vtsls',
-        'gopls',
+        'pyright', 'clangd', 'gopls', 'svelte',
+        'astro', 'html', 'cssls', 'intelephense',
+        'vtsls',
+        -- 'tsserver',
+        'volar',
       },
       setup = {
         pyright = {
@@ -44,6 +55,64 @@ return {
             python = {
               pythonPath = '/usr/bin/python3.11',
             }
+          }
+        },
+        intelephense = {
+          init_options = {
+            globalStoragePath = '/tmp/intelephense'
+          }
+        },
+        volar = {
+          init_options = {
+            typescript = { tsdk = '/home/sglkc/.local/share/pnpm/global/5/node_modules/typescript/lib' },
+            vue = { hybridMode = true }
+          }
+        },
+        vtsls = {
+          settings = {
+            complete_function_calls = true,
+            javascript = {
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              experimental = {
+                completion = { enableServerSideFuzzyMatch = true }
+              },
+            },
+            typescript = {
+              suggest = {
+                completeFunctionCalls = true,
+              },
+              experimental = {
+                completion = { enableServerSideFuzzyMatch = true }
+              },
+            },
+            vtsls = {
+              autoUseWorkspaceTsdk = true,
+              tsserver = {
+                globalPlugins = {
+                  {
+                    name = '@vue/typescript-plugin',
+                    location = '/home/sglkc/.local/share/pnpm/global/5/node_modules/@vue/language-server',
+                    languages = { 'vue' },
+                    configNamespace = 'typescript',
+                    enableForWorkspaceTypeScriptVersions = true
+                  },
+                  {
+                    name = 'typescript-svelte-plugin',
+                    location = '/home/sglkc/.local/share/pnpm/global/5/node_modules/typescript-svelte-plugin',
+                    enableForWorkspaceTypeScriptVersions = true,
+                  },
+                }
+              }
+            }
+          },
+          filetypes = {
+            'typescript',
+            'javascript',
+            'javascriptreact',
+            'typescriptreact',
+            'vue',
           }
         },
       }
@@ -54,10 +123,8 @@ return {
 
       capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
-      -- TODO: move autocmd to buffer
       vim.cmd([[
-        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focus = false })
-        hi! def link DiagnosicUnnecessary Comment
+        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focusable = false })
       ]])
 
       -- Use an on_attach function to only map the following keys
@@ -65,17 +132,6 @@ return {
       local on_attach = function(client, bufnr)
         local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
         local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-        -- Highlighting references
-        if client.server_capabilities.document_highlight then
-          vim.api.nvim_exec([[
-          augroup lsp_document_highlight
-          autocmd! * <buffer>
-          autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-          autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-          augroup END
-          ]], false)
-        end
 
         -- Enable completion triggered by <c-x><c-o>
         buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -103,8 +159,6 @@ return {
         buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
         buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
       end
-
-      require('lspconfig.ui.windows').default_options.border = 'single'
 
       local root_dir = require('lspconfig').util.root_pattern(
         '.git', '.gitignore', 'package.json', 'node_modules', 'composer.json',
@@ -142,7 +196,9 @@ return {
             root_dir = root_dir,
             capabilities = vim.deepcopy(capabilities),
           },
-          opts.setup[server] or {}
+          opts.setup[server] or {
+            single_file_support = false
+          }
         )
 
         require("lspconfig")[server].setup(server_opts)

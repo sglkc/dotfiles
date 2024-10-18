@@ -1,29 +1,30 @@
 return {
   {
-    "hrsh7th/nvim-cmp",
-    version = false,
+    "yioneko/nvim-cmp",
+    -- version = false,
+    branch = "perf-up",
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
-      {
-        "L3MON4D3/LuaSnip",
-        dependencies = {
-          {
-            "rafamadriz/friendly-snippets",
-            config = function()
-              require("luasnip.loaders.from_vscode").lazy_load()
-            end,
-          }
-        },
-        keys = function() return {} end,
-        opts = {
-          history = true,
-          delete_check_events = "TextChanged",
-        },
-      },
+      -- "saadparwaiz1/cmp_luasnip",
+      -- {
+      --   "L3MON4D3/LuaSnip",
+      --   dependencies = {
+      --     {
+      --       "rafamadriz/friendly-snippets",
+      --       config = function()
+      --         require("luasnip.loaders.from_vscode").lazy_load()
+      --       end,
+      --     }
+      --   },
+        -- keys = function() return {} end,
+        -- opts = {
+        --   history = true,
+        --   delete_check_events = "TextChanged",
+        -- },
+      -- },
       "onsails/lspkind.nvim"
     },
     opts = function()
@@ -39,14 +40,48 @@ return {
       vim.api.nvim_set_hl(0, 'CmpItemKindProperty', { link='CmpItemKindKeyword' })
       vim.api.nvim_set_hl(0, 'CmpItemKindUnit', { link='CmpItemKindKeyword' })
 
-      local luasnip = require("luasnip")
+      -- local luasnip = require("luasnip")
       local cmp = require("cmp")
       local defaults = require("cmp.config.default")()
+
+      local lspkind_comparator = function(conf)
+        local lsp_types = require('cmp.types').lsp
+        return function(entry1, entry2)
+          if entry1.source.name ~= 'nvim_lsp' then
+            if entry2.source.name == 'nvim_lsp' then
+              return false
+            else
+              return nil
+            end
+          end
+          local kind1 = lsp_types.CompletionItemKind[entry1:get_kind()]
+          local kind2 = lsp_types.CompletionItemKind[entry2:get_kind()]
+
+          local priority1 = conf.kind_priority[kind1] or 0
+          local priority2 = conf.kind_priority[kind2] or 0
+          if priority1 == priority2 then
+            return nil
+          end
+          return priority2 < priority1
+        end
+      end
+
+      local label_comparator = function(entry1, entry2)
+        return entry1.completion_item.label < entry2.completion_item.label
+      end
 
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
         completion = {
           completeopt = "menu,menuone,noselect,preview",
+        },
+        performance = {
+          debounce = 60, -- 60
+          throttle = 10, -- 30
+          fetching_timeout = 50, -- 500  -- 100
+          confirm_resolve_timeout = 10, -- 80  -- 50
+          async_budget = 1, -- 1
+          max_view_entries = 200, -- 200
         },
         window = {
           completion = {
@@ -55,16 +90,24 @@ return {
           },
           documentation = cmp.config.window.bordered()
         },
-        snippet = {
-          expand = function(args)
-            luasnip.lsp_expand(args.body)
-          end
-        },
+        -- snippet = {
+        --   expand = function(args)
+        --     luasnip.lsp_expand(args.body)
+        --   end
+        -- },
         sources = {
-          { name = "luasnip", priority = 15, max_item_count = 3 },
-          { name = "nvim_lsp", priority = 10 },
-          { name = "buffer", priority = 3, max_item_count = 3 },
-          { name = "path", priority = 1, max_item_count = 3 },
+          -- { name = "luasnip", priority = 15, max_item_count = 3 },
+          {
+            name = "nvim_lsp",
+            priority = 10,
+            group_index = 1,
+            max_item_count = 50,
+            entry_filter = function(entry, ctx)
+              return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
+            end
+          },
+          { name = "path", priority = 3, max_item_count = 5, group_index = 2 },
+          { name = "buffer", priority = 1, max_item_count = 5, group_index = 2 },
         },
         formatting = {
           fields = {'menu', 'abbr', 'kind'},
@@ -88,16 +131,16 @@ return {
           ['<Tab>'] = function(fallback)
             if cmp.visible() then
               return cmp.select_next_item()
-            elseif luasnip.jumpable(1) then
-              return luasnip.jump(1)
+              -- elseif luasnip.jumpable(1) then
+              --   return luasnip.jump(1)
             end
             fallback()
           end,
           ['<S-Tab>'] = function(fallback)
             if cmp.visible() then
               return cmp.select_prev_item()
-            elseif luasnip.jumpable(-1) then
-              return luasnip.jump(-1)
+              -- elseif luasnip.jumpable(-1) then
+              --   return luasnip.jump(-1)
             end
             fallback()
           end,
@@ -110,6 +153,47 @@ return {
             select = true,
           }),
         },
+        -- sorting = {
+        --   comparators = {
+        --     cmp.config.compare.exact,
+        --     cmp.config.compare.offset,
+        --     cmp.config.compare.score,
+        --     lspkind_comparator({
+        --       kind_priority = {
+        --         Variable = 12,
+        --         Field = 11,
+        --         Property = 11,
+        --         Constant = 10,
+        --         Enum = 10,
+        --         EnumMember = 10,
+        --         Event = 10,
+        --         Function = 10,
+        --         Method = 10,
+        --         Operator = 10,
+        --         Reference = 10,
+        --         Struct = 10,
+        --         File = 8,
+        --         Folder = 8,
+        --         Class = 5,
+        --         Color = 5,
+        --         Module = 5,
+        --         Keyword = 2,
+        --         Constructor = 1,
+        --         Interface = 1,
+        --         Snippet = 0,
+        --         Text = -1,
+        --         TypeParameter = 1,
+        --         Unit = 1,
+        --         Value = 1,
+        --       },
+        --     }),
+        --     -- cmp.config.compare.kind,
+        --     -- cmp.config.compare.sort_text,
+        --     cmp.config.compare.length,
+        --     cmp.config.compare.order,
+        --     -- label_comparator,
+        --   },
+        -- },
       }
     end,
     ---@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
@@ -119,17 +203,17 @@ return {
 
       cmp.setup(opts)
 
-      cmp.event:on("confirm_done", function(event)
-        if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-          return
-        end
-        local entry = event.entry
-        local item = entry:get_completion_item()
-        if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
-          local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
-          vim.api.nvim_feedkeys(keys, "i", true)
-        end
-      end)
+      -- cmp.event:on("confirm_done", function(event)
+      --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
+      --     return
+      --   end
+      --   local entry = event.entry
+      --   local item = entry:get_completion_item()
+      --   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
+      --     local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
+      --     vim.api.nvim_feedkeys(keys, "i", true)
+      --   end
+      -- end)
     end,
   }
 }
