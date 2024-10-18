@@ -60,8 +60,8 @@ return {
           },
           vimgrep_arguments = {
             "rg", "--color=never", "--no-heading", "--with-filename",
-            "--line-number", "--column", "--smart-case", "--trim",
-            "--hidden", "--glob", "!**/.git/*"
+            "--line-number", "--column", "--smart-case", "--trim", "--hidden",
+            "-g", "!**/.git/*", "-g", "!**/public/*", "-g", "!**/*.min.*"
           },
           mappings = {
             i = {
@@ -69,7 +69,9 @@ return {
             }
           },
           preview = {
-            filesize_limit = 1 -- MB
+            filesize_limit = 0.5, -- MB
+            highlight_limit = 0.1,
+            treesitter = false,
           },
         },
         pickers = {

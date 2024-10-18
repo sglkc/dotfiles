@@ -6,7 +6,11 @@
     (object_creation_expression))
   ; prevent double indent for `return function() { ... }`
   (return_statement
-    (anonymous_function_creation_expression))
-] @indent.dedent 
+    (anonymous_function))
+] @indent.dedent
 
-(member_call_expression) @indent.begin
+[
+  (member_call_expression)
+  (member_access_expression)
+  (conditional_expression)
+] @indent.begin

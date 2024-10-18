@@ -19,5 +19,11 @@ return {
   config = function ()
     vim.g.lazygit_floating_window_scaling_factor = 0.9
     vim.api.nvim_set_hl(0, 'LazyGitBorder', { link='TelescopeBorder' })
+    vim.api.nvim_create_autocmd('FileType', {
+      pattern = 'lazygit',
+      callback = function()
+        vim.api.nvim_buf_set_keymap(0, 't', '<Esc>', '<Esc>', { noremap = true, silent = true })
+      end,
+    })
   end
 }

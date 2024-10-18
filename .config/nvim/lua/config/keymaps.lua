@@ -29,9 +29,15 @@ map('n', 'wq', '<C-w><C-q>')
 map('n', 'w<Left>', '<C-w><Left>')
 map('n', 'w<Right>', '<C-w><Right>')
 
+-- Keep center when scrolling
+map('n', 'k', 'kzz')
+map('n', 'j', 'jzz')
+
 -- Small scroll
+map('n', '<C-k>', '<C-U>')
 map('n', '<C-Up>', '<C-U>')
 map('i', '<C-Up>', '<C-o><C-U>')
+map('n', '<C-j>', '<C-D>')
 map('n', '<C-Down>', '<C-D>')
 map('i', '<C-Down>', '<C-o><C-D>')
 
@@ -53,6 +59,14 @@ map('i', '<A-Del>', '<Esc><Right>"_df i')           -- delete front word until s
 map('n', '<S-Del>', '"_df ')                        -- delete front word until space
 map('i', '<S-Del>', '<Esc><Right>"_df i')           -- delete front word until space insert mode
 
+-- Prevent deleting from also copying
+-- map('n', 'd', '"_d')
+-- map('v', 'd', '"_d')
+-- map('n', 'dd', '"_dd')
+-- map('n', '<leader>d', 'd')
+-- map('v', '<leader>d', 'd')
+-- map('n', '<leader>dd', 'dd')
+
 -- Compile & Run
 _G.compileAndRun = function()
   local ft = vim.bo.filetype
@@ -60,7 +74,7 @@ _G.compileAndRun = function()
     javascript = 'node %',
     typescript = 'tsx %',
     go = 'go run .',
-    java = 'javac %; java -cp %:p:h %:t:r',
+    java = 'javac %; java %:t:r',
     python = 'python %:p:t',
     php = 'php %'
   }
