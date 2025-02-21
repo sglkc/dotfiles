@@ -1,2 +1,0 @@
-; ctrl+backspace to delete word
-"\C-H": backward-kill-word
