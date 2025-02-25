@@ -50,13 +50,13 @@ return {
         'volar',
       },
       setup = {
-        pyright = {
-          settings = {
-            python = {
-              pythonPath = '/usr/bin/python3.11',
-            }
-          }
-        },
+        -- pyright = {
+        --   settings = {
+        --     python = {
+        --       pythonPath = '/usr/bin/python3.11',
+        --     }
+        --   }
+        -- },
         intelephense = {
           init_options = {
             globalStoragePath = '/tmp/intelephense'

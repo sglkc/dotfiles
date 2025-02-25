@@ -5,6 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+alias l='ls'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
@@ -21,6 +22,8 @@ alias lg='lazygit'
 alias e='exit'
 alias ssh='TERM="xterm-256color" ssh'
 alias live='budo --wg "**/*.{html,css,js,mjs}" --live'
+alias rm='trash -v --'
+alias rm!='rm'
 
 # auto cd if using directory
 shopt -s autocd
