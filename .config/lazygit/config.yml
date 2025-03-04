@@ -1,0 +1,10 @@
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+# If true, exit Lazygit when the user presses escape in a context where there is nothing to cancel/close
+quitOnTopLevelReturn: true
+
+# If true, don't display introductory popups upon opening Lazygit.
+disableStartupPopups: true
+
+# If true, display a confirmation when subprocess terminates. This allows you to view the output of the subprocess before returning to Lazygit.
+promptToReturnFromSubprocess: false
