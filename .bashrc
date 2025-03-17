@@ -5,10 +5,11 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+PACKAGE_STORE="$HOME/.packages"
+
 alias l='ls'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
-PS1='[\u@\h \W]\$ '
 
 # dir up aliases
 alias ..='cd ..'
@@ -17,19 +18,25 @@ alias ....='cd ../..'
 alias .....='cd ../../..'
 alias ......='cd ../../..'
 
-alias lzd='lazydocker'
 alias lg='lazygit'
 alias e='exit'
-alias ssh='TERM="xterm-256color" ssh'
-alias live='budo --wg "**/*.{html,css,js,mjs}" --live'
-alias rm='trash -v --'
-alias rm!='rm'
+
+# safe delete
+if [ -x "$(command -v trash)" ]; then
+  alias rm='trash -v --'
+  alias rm!='rm'
+fi
+
+# nodejs live web server
+[ -x "$(command -v budo)" ] && alias live='budo --wg "**/*.{html,css,js,mjs}" --live'
+
+[[ "$TERM" == "xterm-kitty" ]] && alias ssh="TERM=xterm-256color ssh"
 
 # auto cd if using directory
 shopt -s autocd
 
 # fnm node version manager
-FNM_PATH="/home/seya/.local/share/fnm"
+FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "$(fnm env)"
@@ -38,53 +45,45 @@ fi
 # starship for prompt
 eval "$(starship init bash)"
 
-# HSTR configuration - add this to ~/.bashrc
-alias hh=hstr                   # hh to be alias for hstr
-export HSTR_CONFIG=hicolor      # get more colors
+# history config
 shopt -s histappend             # append new history items to .bash_history
 export HISTCONTROL=ignoreboth   # leading space hides commands from history
 export HISTFILESIZE=10000       # increase history file size (default is 500)
 export HISTSIZE=${HISTFILESIZE} # increase history size (default is 500)
 # ensure synchronization between bash memory and history file
 export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
-function hstrnotiocsti {
-  { READLINE_LINE="$({ </dev/tty hstr ${READLINE_LINE}; } 2>&1 1>&3 3>&-)"; } 3>&1
-  READLINE_POINT=${#READLINE_LINE}
-}
-# if this is interactive shell, then bind hstr to Ctrl-r (for Vi mode check doc)
-if [[ $- =~ .*i.* ]]; then bind -x '"\C-r": "hstrnotiocsti"'; fi
-export HSTR_TIOCSTI=n
 
-# pnpm
-alias npm=pnpm
-export PNPM_HOME="/home/seya/.local/share/pnpm"
-case ":$PATH:" in
-*":$PNPM_HOME:"*) ;;
-*) export PATH="$PNPM_HOME:$PATH" ;;
-esac
-# pnpm end
+# fzf
+export FZF_COMPLETION_TRIGGER="!"
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--color=border:#313244,label:#cdd6f4"
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+bind -x '"\C-f": "~/.fzf.rg.bash"'
 
-# command not found detection, SLOW!
-# if [ -a /usr/share/doc/pkgfile/command-not-found.bash ]
-#   source /usr/share/doc/pkgfile/command-not-found.bash
-# fi
+# ctrl backspace delete
+bind '"\C-H": shell-backward-kill-word'
 
 # add local bin for zoxide and more...
-LOCAL_BIN="/home/seya/.local/bin"
-if [ -d "$LOCAL_BIN" ]; then
-  export PATH="$LOCAL_BIN:$PATH"
-fi
+LOCAL_BIN="$HOME/.local/bin"
+[[ -d "$LOCAL_BIN" ]] && export PATH="$LOCAL_BIN:$PATH"
 
 # zoxide for cd replacement
 eval "$(zoxide init bash)"
 alias cd=z
 
-# fix locale
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
+# unified package managers location
+[[ ! -d "$PACKAGE_STORE" ]] && mkdir -p "$PACKAGE_STORE"
+export PNPM_HOME="$PACKAGE_STORE/pnpm"
+export UV_HOME="$PACKAGE_STORE/uv"
+export GOPATH="$PACKAGE_STORE/go"
+export COMPOSER_HOME="$PACKAGE_STORE/composer"
 
-# unified cache location with windows
-CACHE_DIR="/mnt/storage/.cache"
-export UV_CACHE_DIR="$CACHE_DIR/uv"
-export GO_PATH="$CACHE_DIR/go"
-export COMPOSER_HOME="$CACHE_DIR/composer"
+export PATH="$PATH:$PNPM_HOME:$UV_HOME/bin:$GOPATH/bin:/usr/local/go/bin"
+
+# dotnet
+DOTNET_DIR="$HOME/.dotnet/tools"
+[[ -d "$DOTNET_DIR" ]] && export PATH="$PATH:$DOTNET_DIR"
