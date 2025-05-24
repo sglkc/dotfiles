@@ -17,15 +17,15 @@ end
 
 -- UTILITY
 opt.mouse = 'a'
-opt.clipboard = 'unnamed,unnamedplus'
+opt.clipboard = 'unnamedplus'
 
 opt.ignorecase = true
 opt.smartcase = true
 opt.history = 1000
 opt.updatetime = 200
 opt.virtualedit = 'block'
-opt.scrolloff = 2
-opt.sidescrolloff = 2
+opt.scrolloff = 4
+opt.sidescrolloff = 4
 opt.autochdir = true
 
 -- FORMATTING

@@ -39,6 +39,7 @@ return {
       vim.api.nvim_set_hl(0, 'CmpItemKindKeyword', { bg='NONE', fg='#89ddff' })
       vim.api.nvim_set_hl(0, 'CmpItemKindProperty', { link='CmpItemKindKeyword' })
       vim.api.nvim_set_hl(0, 'CmpItemKindUnit', { link='CmpItemKindKeyword' })
+      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg ="#6CC644" })
 
       -- local luasnip = require("luasnip")
       local cmp = require("cmp")
@@ -70,10 +71,16 @@ return {
         return entry1.completion_item.label < entry2.completion_item.label
       end
 
+      local has_words_before = function()
+        if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+      end
+
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
         completion = {
-          completeopt = "menu,menuone,noselect,preview",
+          completeopt = "menu,menuone,noselect,preview,popup",
         },
         performance = {
           debounce = 60, -- 60
@@ -98,6 +105,11 @@ return {
         sources = {
           -- { name = "luasnip", priority = 15, max_item_count = 3 },
           {
+            name = "copilot",
+            group_index = 1,
+            priority = 20,
+          },
+          {
             name = "nvim_lsp",
             priority = 10,
             group_index = 1,
@@ -117,6 +129,7 @@ return {
             ellipsis_char = '…',
             before = function (entry, vim_item)
               local menu_icon = {
+                copilot = '',
                 nvim_lsp = 'λ',
                 luasnip = '⋗',
                 buffer = 'Ω',
@@ -128,14 +141,21 @@ return {
           })
         },
         mapping = {
-          ['<Tab>'] = function(fallback)
-            if cmp.visible() then
-              return cmp.select_next_item()
-              -- elseif luasnip.jumpable(1) then
-              --   return luasnip.jump(1)
+          ["<Tab>"] = vim.schedule_wrap(function(fallback)
+            if cmp.visible() and has_words_before() then
+              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+            else
+              fallback()
             end
-            fallback()
-          end,
+          end),
+          -- ['<Tab>'] = function(fallback)
+          --   if cmp.visible() then
+          --     return cmp.select_next_item()
+          --     -- elseif luasnip.jumpable(1) then
+          --     --   return luasnip.jump(1)
+          --   end
+          --   fallback()
+          -- end,
           ['<S-Tab>'] = function(fallback)
             if cmp.visible() then
               return cmp.select_prev_item()
@@ -202,6 +222,14 @@ return {
       local Kind = cmp.lsp.CompletionItemKind
 
       cmp.setup(opts)
+
+      cmp.event:on("menu_opened", function()
+        vim.b.copilot_suggestion_hidden = true
+      end)
+
+      cmp.event:on("menu_closed", function()
+        vim.b.copilot_suggestion_hidden = false
+      end)
 
       -- cmp.event:on("confirm_done", function(event)
       --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
