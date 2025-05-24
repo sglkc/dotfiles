@@ -16,7 +16,7 @@ return {
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
-      }
+      },
     },
     keys = {
       {
@@ -91,6 +91,7 @@ return {
       }
 
       require('telescope').load_extension('fzf')
+      -- require('telescope').load_extension('ui-select')
       require('telescope').setup(opts)
     end
   }
