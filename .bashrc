@@ -5,6 +5,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# Ubuntu default bashrc
+[ -f /etc/bash.bashrc ] && source /etc/bash.bashrc
+
 PACKAGE_STORE="$HOME/.packages"
 
 alias l='ls'
@@ -18,6 +21,7 @@ alias ....='cd ../..'
 alias .....='cd ../../..'
 alias ......='cd ../../..'
 
+alias python='python3'
 alias lg='lazygit'
 alias e='exit'
 
@@ -30,7 +34,18 @@ fi
 # nodejs live web server
 [ -x "$(command -v budo)" ] && alias live='budo --wg "**/*.{html,css,js,mjs}" --live'
 
-[[ "$TERM" == "xterm-kitty" ]] && alias ssh="TERM=xterm-256color ssh"
+if [[ "$TERM" == "xterm-kitty" ]]; then
+  alias ssh="TERM=xterm-256color ssh"
+fi
+
+if [[ -x "$(command -v fcitx5)" ]]; then
+  # export GTK_IM_MODULE=fcitx
+  # export QT_IM_MODULE=fcitx
+  export XMODIFIERS=@im=fcitx
+  export SDL_IM_MODULE=fcitx
+  export INPUT_METHOD=fcitx
+  export GLFW_IM_MODULE=ibus
+fi
 
 # auto cd if using directory
 shopt -s autocd
@@ -82,8 +97,15 @@ export UV_HOME="$PACKAGE_STORE/uv"
 export GOPATH="$PACKAGE_STORE/go"
 export COMPOSER_HOME="$PACKAGE_STORE/composer"
 
-export PATH="$PATH:$PNPM_HOME:$UV_HOME/bin:$GOPATH/bin:/usr/local/go/bin"
+export PATH="$PATH:$PNPM_HOME:$UV_HOME/bin:$GOPATH/bin:/usr/local/go/bin:$COMPOSER_HOME/vendor/bin"
 
 # dotnet
 DOTNET_DIR="$HOME/.dotnet/tools"
 [[ -d "$DOTNET_DIR" ]] && export PATH="$PATH:$DOTNET_DIR"
+
+# fnm
+FNM_PATH="/home/seya/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "`fnm env`"
+fi
