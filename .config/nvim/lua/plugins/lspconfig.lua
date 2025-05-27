@@ -130,34 +130,85 @@ return {
       -- Use an on_attach function to only map the following keys
       -- after the language server attaches to the current buffer
       local on_attach = function(client, bufnr)
-        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-        local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
         -- Enable completion triggered by <c-x><c-o>
-        buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+        vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-        -- Mappings.
-        local opts = { noremap = true, silent = true }
+        local function lsp_buf_hover() vim.lsp.buf.hover({ border = "rounded", max_width = 60 }) end
 
-        -- TODO: fix keymap
-        -- See `:help vim.lsp.*` for documentation on any of the below functions
-        buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-        buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-        buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-        buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-        buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-        buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-        buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-        buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-        buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-        buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-        buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-        buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-        buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-        buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-        buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-        buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+        -- Define the LSP actions available in the menu
+        -- Each action has a description for the menu and a function to execute
+        local lsp_actions = {
+          { desc = "Go to Declaration", fn = function() vim.lsp.buf.declaration() end },
+          { desc = "Go to Definition", fn = function() vim.lsp.buf.definition() end },
+          { desc = "Hover Information", fn = function() lsp_buf_hover() end },
+          { desc = "Go to Implementation", fn = function() vim.lsp.buf.implementation() end },
+          { desc = "Signature Help", fn = function() vim.lsp.buf.signature_help() end },
+          -- { desc = "Add Workspace Folder", fn = function() vim.lsp.buf.add_workspace_folder() end },
+          -- { desc = "Remove Workspace Folder", fn = function() vim.lsp.buf.remove_workspace_folder() end },
+          -- { desc = "List Workspace Folders", fn = function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end },
+          { desc = "Go to Type Definition", fn = function() vim.lsp.buf.type_definition() end },
+          { desc = "Rename Symbol", fn = function() vim.lsp.buf.rename() end },
+          { desc = "Code Action", fn = function() vim.lsp.buf.code_action() end },
+          { desc = "Find References", fn = function() vim.lsp.buf.references() end },
+          -- { desc = "Show Line Diagnostics", fn = function() vim.diagnostic.open_float(nil, { scope = "line" }) end },
+          { desc = "Go to Previous Diagnostic", fn = function() vim.diagnostic.goto_prev() end },
+          { desc = "Go to Next Diagnostic", fn = function() vim.diagnostic.goto_next() end },
+          { desc = "Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
+          { desc = "Format Buffer/Selection", fn = function() vim.lsp.buf.format() end },
+        }
+
+        -- Function to display the LSP action menu
+        local function show_lsp_action_menu()
+          -- Prepare the list of descriptions for vim.ui.select
+          local action_descriptions = {}
+          for _, action in ipairs(lsp_actions) do
+            table.insert(action_descriptions, action.desc)
+          end
+
+          vim.ui.select(action_descriptions, {
+            prompt = "LSP Action:", -- Title for the selection menu
+            format_item = function(item)
+              -- 'item' is the description string itself
+              return item
+            end,
+          }, function(selected_description, index)
+              -- This callback function is executed when an item is selected or selection is cancelled
+
+              if selected_description == nil then
+                -- User cancelled the selection (e.g., pressed Esc)
+                vim.notify("LSP Action selection cancelled.", vim.log.levels.INFO)
+                return
+              end
+
+              -- 'index' is the 1-based index of the selected item in action_descriptions
+              local selected_action = lsp_actions[index]
+
+              if selected_action and selected_action.fn then
+                -- Execute the command in a protected call to catch potential errors
+                local ok, err = pcall(selected_action.fn)
+                if not ok then
+                  vim.notify("Error executing LSP action: " .. tostring(selected_action.description) .. "\n" .. tostring(err), vim.log.levels.ERROR)
+                end
+              else
+                vim.notify("Error: Could not find action for '" .. tostring(selected_description) .. "'", vim.log.levels.ERROR)
+              end
+            end)
+        end
+
+        -- Key mapping for <Leader><CR> in normal mode to open the LSP action menu
+        vim.keymap.set('n', '<CR>', lsp_buf_hover, {
+          noremap = true,
+          silent = true,
+          desc = 'Open LSP Hover Menu'
+        })
+
+        vim.keymap.set('n', '<Leader><CR>', show_lsp_action_menu, {
+          noremap = true,
+          silent = true,
+          desc = 'Open LSP Action Menu' -- Description for which-key or other plugins
+        })
+
+        vim.notify("LSP Action Menu mapped to <Leader><CR>", vim.log.levels.INFO)
       end
 
       local root_dir = require('lspconfig').util.root_pattern(
