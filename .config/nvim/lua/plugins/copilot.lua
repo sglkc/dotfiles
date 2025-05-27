@@ -6,7 +6,7 @@ return {
     event = "BufReadPost",
     opts = {
       suggestion = {
-        enabled = not vim.g.ai_cmp,
+        enabled = false,
         auto_trigger = true,
         hide_during_completion = true, -- vim.g.ai_cmp,
         keymap = {
@@ -15,19 +15,22 @@ return {
           -- prev = "<M-[>",
         },
       },
-      panel = { enabled = true },
-      copilot_model = "gpt-4o-copilot",
+      panel = { enabled = false },
+      copilot_model = "claude-sonnet-4",
       filetypes = {
         markdown = true,
         help = true,
       },
+      -- should_attach = function(_, _)
+      --   return false
+      -- end
     },
   },
   {
     "zbirenbaum/copilot-cmp",
-    config = function ()
-      require("copilot_cmp").setup()
-    end
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }
+    },
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
@@ -47,7 +50,8 @@ return {
     },
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {
-      -- See Configuration section for options
+      model = "claude-sonnet-4",
+      insert_at_end = true,
     },
   },
 }
