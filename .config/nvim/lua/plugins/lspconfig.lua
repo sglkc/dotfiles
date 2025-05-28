@@ -133,28 +133,28 @@ return {
         -- Enable completion triggered by <c-x><c-o>
         vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-        local function lsp_buf_hover() vim.lsp.buf.hover({ border = "rounded", max_width = 60 }) end
+        local function lsp_buf_hover() vim.lsp.buf.hover({ border = "rounded" }) end
 
         -- Define the LSP actions available in the menu
         -- Each action has a description for the menu and a function to execute
         local lsp_actions = {
-          { desc = "Go to Declaration", fn = function() vim.lsp.buf.declaration() end },
-          { desc = "Go to Definition", fn = function() vim.lsp.buf.definition() end },
-          { desc = "Hover Information", fn = function() lsp_buf_hover() end },
-          { desc = "Go to Implementation", fn = function() vim.lsp.buf.implementation() end },
-          { desc = "Signature Help", fn = function() vim.lsp.buf.signature_help() end },
+          { desc = "1.  Code Action", fn = function() vim.lsp.buf.code_action() end },
+          { desc = "2.  Format Buffer/Selection", fn = function() vim.lsp.buf.format() end },
+          { desc = "3.  Go to Declaration", fn = function() vim.lsp.buf.declaration() end },
+          { desc = "4.  Go to Definition", fn = function() vim.lsp.buf.definition() end },
+          { desc = "5.  Go to Implementation", fn = function() vim.lsp.buf.implementation() end },
+          { desc = "6.  Find References", fn = function() vim.lsp.buf.references() end },
+          { desc = "7.  Rename Symbol", fn = function() vim.lsp.buf.rename() end },
+          { desc = "8.  Signature Help", fn = function() vim.lsp.buf.signature_help() end },
+          { desc = "10. Go to Type Definition", fn = function() vim.lsp.buf.type_definition() end },
+          { desc = "11. Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
+          { desc = "12. Go to Previous Diagnostic", fn = function() vim.diagnostic.goto_prev() end },
+          { desc = "13. Go to Next Diagnostic", fn = function() vim.diagnostic.goto_next() end },
+          -- { desc = "Hover Information", fn = function() lsp_buf_hover() end },
           -- { desc = "Add Workspace Folder", fn = function() vim.lsp.buf.add_workspace_folder() end },
           -- { desc = "Remove Workspace Folder", fn = function() vim.lsp.buf.remove_workspace_folder() end },
           -- { desc = "List Workspace Folders", fn = function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end },
-          { desc = "Go to Type Definition", fn = function() vim.lsp.buf.type_definition() end },
-          { desc = "Rename Symbol", fn = function() vim.lsp.buf.rename() end },
-          { desc = "Code Action", fn = function() vim.lsp.buf.code_action() end },
-          { desc = "Find References", fn = function() vim.lsp.buf.references() end },
           -- { desc = "Show Line Diagnostics", fn = function() vim.diagnostic.open_float(nil, { scope = "line" }) end },
-          { desc = "Go to Previous Diagnostic", fn = function() vim.diagnostic.goto_prev() end },
-          { desc = "Go to Next Diagnostic", fn = function() vim.diagnostic.goto_next() end },
-          { desc = "Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
-          { desc = "Format Buffer/Selection", fn = function() vim.lsp.buf.format() end },
         }
 
         -- Function to display the LSP action menu
@@ -200,6 +200,12 @@ return {
           noremap = true,
           silent = true,
           desc = 'Open LSP Hover Menu'
+        })
+
+        vim.keymap.set('n', '<C-CR>', show_lsp_action_menu, {
+          noremap = true,
+          silent = true,
+          desc = 'Open LSP Action Menu' -- Description for which-key or other plugins
         })
 
         vim.keymap.set('n', '<Leader><CR>', show_lsp_action_menu, {

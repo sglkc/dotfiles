@@ -37,16 +37,16 @@ return {
     dependencies = {
       { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
-      {
-        "folke/snacks.nvim",
-        ---@type snacks.Config
-        opts = {
-          picker = {
-            enabled = true,
-            ui_select = true,
-          },
-        },
-      }
+      -- {
+      --   "folke/snacks.nvim",
+      --   ---@type snacks.Config
+      --   opts = {
+      --     picker = {
+      --       enabled = true,
+      --       ui_select = true,
+      --     },
+      --   },
+      -- }
     },
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {

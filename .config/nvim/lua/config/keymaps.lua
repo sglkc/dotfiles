@@ -9,7 +9,7 @@ end
 vim.g.mapleader = ','
 
 -- Quick save
-map('n', '<leader>s', ':w<CR>')
+map('n', '<leader>w', ':lua vim.lsp.buf.format()<CR>:w<CR>')
 
 -- Quick close
 map('n', '<leader>q', ':qa!<CR>')
