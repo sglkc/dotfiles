@@ -66,7 +66,9 @@ return {
         },
         mappings = {
           i = {
-            ["<esc>"] = actions.close
+            ["<esc>"] = actions.close,
+            ["<C-w>"] = actions.move_selection_previous,
+            ["<C-s>"] = actions.move_selection_next,
           }
         },
         preview = {
