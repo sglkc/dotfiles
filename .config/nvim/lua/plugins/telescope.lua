@@ -8,11 +8,14 @@ local function get_git_root()
   return vim.fn.fnamemodify(dot_git_path, ":h")
 end
 
+local actions = require('telescope.actions')
+
 return {
   {
     "nvim-telescope/telescope.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-ui-select.nvim",
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
@@ -50,49 +53,57 @@ return {
         desc = "Find buffers (Telescope)",
       },
     },
-    config = function()
-      local actions = require('telescope.actions')
-      local opts = {
-        defaults = {
-          path_display = {
-            shorten = 5,
-            truncate = 3
-          },
-          vimgrep_arguments = {
-            "rg", "--color=never", "--no-heading", "--with-filename",
-            "--line-number", "--column", "--smart-case", "--trim", "--hidden",
-            "-g", "!**/.git/*", "-g", "!**/public/*", "-g", "!**/*.min.*"
-          },
+    opts = {
+      defaults = {
+        path_display = {
+          shorten = 5,
+          truncate = 3
+        },
+        vimgrep_arguments = {
+          "rg", "--color=never", "--no-heading", "--with-filename",
+          "--line-number", "--column", "--smart-case", "--trim", "--hidden",
+          "-g", "!**/.git/*", "-g", "!**/public/*", "-g", "!**/*.min.*"
+        },
+        mappings = {
+          i = {
+            ["<esc>"] = actions.close
+          }
+        },
+        preview = {
+          filesize_limit = 0.5, -- MB
+          highlight_limit = 0.1,
+          treesitter = false,
+        },
+      },
+      pickers = {
+        buffers = {
           mappings = {
             i = {
-              ["<esc>"] = actions.close
+              ["<c-d>"] = actions.delete_buffer + actions.move_to_top,
             }
-          },
-          preview = {
-            filesize_limit = 0.5, -- MB
-            highlight_limit = 0.1,
-            treesitter = false,
-          },
-        },
-        pickers = {
-          buffers = {
-            mappings = {
-              i = {
-                ["<c-d>"] = actions.delete_buffer + actions.move_to_top,
-              }
-            }
-          },
-          find_files = {
-            find_command = {
-              "rg", "--files", "--hidden", "--glob", "!**/.git/*"
-            },
           }
+        },
+        find_files = {
+          find_command = {
+            "rg", "--files", "--hidden", "--glob", "!**/.git/*"
+          },
         }
-      }
-
-      require('telescope').load_extension('fzf')
-      -- require('telescope').load_extension('ui-select')
+      },
+      extensions = {
+        ["ui-select"] = {
+          require('telescope.themes').get_cursor({
+            layout_config = {
+              width = 60,
+              height = 15
+            },
+          })
+        },
+      },
+    },
+    config = function(_, opts)
       require('telescope').setup(opts)
+      require('telescope').load_extension('fzf')
+      require('telescope').load_extension('ui-select')
     end
   }
 }
