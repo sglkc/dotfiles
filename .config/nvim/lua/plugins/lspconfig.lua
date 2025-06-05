@@ -124,7 +124,7 @@ return {
       capabilities = cmp_nvim_lsp.default_capabilities(capabilities)
 
       vim.cmd([[
-        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focusable = false })
+        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, { focusable = false, scope = 'cursor' })
       ]])
 
       -- Use an on_attach function to only map the following keys
@@ -140,21 +140,21 @@ return {
         local lsp_actions = {
           { desc = "1.  Code Action", fn = function() vim.lsp.buf.code_action() end },
           { desc = "2.  Format Buffer/Selection", fn = function() vim.lsp.buf.format() end },
-          { desc = "3.  Go to Declaration", fn = function() vim.lsp.buf.declaration() end },
+          { desc = "3.  Rename Symbol", fn = function() vim.lsp.buf.rename() end },
           { desc = "4.  Go to Definition", fn = function() vim.lsp.buf.definition() end },
           { desc = "5.  Go to Implementation", fn = function() vim.lsp.buf.implementation() end },
           { desc = "6.  Find References", fn = function() vim.lsp.buf.references() end },
-          { desc = "7.  Rename Symbol", fn = function() vim.lsp.buf.rename() end },
-          { desc = "8.  Signature Help", fn = function() vim.lsp.buf.signature_help() end },
-          { desc = "10. Go to Type Definition", fn = function() vim.lsp.buf.type_definition() end },
-          { desc = "11. Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
-          { desc = "12. Go to Previous Diagnostic", fn = function() vim.diagnostic.goto_prev() end },
-          { desc = "13. Go to Next Diagnostic", fn = function() vim.diagnostic.goto_next() end },
+          { desc = "7.  Signature Help", fn = function() vim.lsp.buf.signature_help() end },
+          { desc = "8.  Go to Declaration", fn = function() vim.lsp.buf.declaration() end },
+          { desc = "9. Go to Type Definition", fn = function() vim.lsp.buf.type_definition() end },
+          { desc = "10. Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
+          { desc = "11. Go to Previous Diagnostic", fn = function() vim.diagnostic.goto_prev() end },
+          { desc = "12. Go to Next Diagnostic", fn = function() vim.diagnostic.goto_next() end },
           -- { desc = "Hover Information", fn = function() lsp_buf_hover() end },
           -- { desc = "Add Workspace Folder", fn = function() vim.lsp.buf.add_workspace_folder() end },
           -- { desc = "Remove Workspace Folder", fn = function() vim.lsp.buf.remove_workspace_folder() end },
           -- { desc = "List Workspace Folders", fn = function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end },
-          -- { desc = "Show Line Diagnostics", fn = function() vim.diagnostic.open_float(nil, { scope = "line" }) end },
+          -- { desc = "13. Show Line Diagnostics", fn = function() vim.diagnostic.open_float(nil, { scope = "line" }) end },
         }
 
         -- Function to display the LSP action menu

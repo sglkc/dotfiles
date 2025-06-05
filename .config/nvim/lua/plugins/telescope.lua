@@ -1,11 +1,12 @@
-local function is_git_repo()
-  vim.fn.system("git rev-parse --is-inside-work-tree")
-  return vim.v.shell_error == 0
-end
-
-local function get_git_root()
-  local dot_git_path = vim.fn.finddir(".git", ".;")
-  return vim.fn.fnamemodify(dot_git_path, ":h")
+local function get_git_root_fs(dir)
+  local current_dir = vim.fn.fnamemodify(dir, ':p')
+  while current_dir ~= '/' do
+    if vim.fn.isdirectory(current_dir .. '/.git') == 1 then
+      return current_dir
+    end
+    current_dir = vim.fn.fnamemodify(current_dir, ':h')
+  end
+  return nil
 end
 
 local actions = require('telescope.actions')
@@ -33,7 +34,8 @@ return {
         "<leader>p",
         function()
           local opts = {}
-          if is_git_repo() then opts.cwd = get_git_root() end
+          local git_root = get_git_root_fs(opts.cwd)
+          if git_root then opts.cwd = git_root end
           require("telescope.builtin").find_files(opts)
         end,
         desc = "Find project files (Telescope)",
@@ -42,7 +44,8 @@ return {
         "<leader>f",
         function()
           local opts = {}
-          if is_git_repo() then opts.cwd = get_git_root() end
+          local git_root = get_git_root_fs(opts.cwd)
+          if git_root then opts.cwd = git_root end
           require("telescope.builtin").live_grep(opts)
         end,
         desc = "Ripgrep project files (Telescope)",
@@ -93,11 +96,11 @@ return {
       },
       extensions = {
         ["ui-select"] = {
-          require('telescope.themes').get_cursor({
-            layout_config = {
-              width = 60,
-              height = 15
-            },
+          require('telescope.themes').get_dropdown({
+            -- layout_config = {
+            --   width = 60,
+            --   height = 15
+            -- },
           })
         },
       },

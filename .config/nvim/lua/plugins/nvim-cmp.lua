@@ -223,13 +223,13 @@ return {
 
       cmp.setup(opts)
 
-      -- cmp.event:on("menu_opened", function()
-      --   vim.b.copilot_suggestion_hidden = true
-      -- end)
-      --
-      -- cmp.event:on("menu_closed", function()
-      --   vim.b.copilot_suggestion_hidden = false
-      -- end)
+      cmp.event:on("menu_opened", function()
+        vim.b.copilot_suggestion_hidden = true
+      end)
+
+      cmp.event:on("menu_closed", function()
+        vim.b.copilot_suggestion_hidden = false
+      end)
 
       -- cmp.event:on("confirm_done", function(event)
       --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then

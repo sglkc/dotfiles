@@ -35,6 +35,7 @@ opt.tabstop = 2
 opt.expandtab = true
 opt.wrap = true
 opt.linebreak = true
+opt.conceallevel = 0
 
 -- UI
 opt.termguicolors = true
