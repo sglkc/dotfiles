@@ -26,7 +26,7 @@ opt.updatetime = 200
 opt.virtualedit = 'block'
 opt.scrolloff = 4
 opt.sidescrolloff = 4
-opt.autochdir = true
+-- opt.autochdir = true
 
 -- FORMATTING
 opt.shiftwidth = 2
