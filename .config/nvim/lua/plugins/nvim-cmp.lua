@@ -80,7 +80,7 @@ return {
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
         completion = {
-          completeopt = "menu,menuone,noselect,preview,popup",
+          completeopt = "menu,menuone,noselect,preview",
         },
         performance = {
           debounce = 60, -- 60
@@ -223,13 +223,13 @@ return {
 
       cmp.setup(opts)
 
-      cmp.event:on("menu_opened", function()
-        vim.b.copilot_suggestion_hidden = true
-      end)
-
-      cmp.event:on("menu_closed", function()
-        vim.b.copilot_suggestion_hidden = false
-      end)
+      -- cmp.event:on("menu_opened", function()
+      --   vim.b.copilot_suggestion_hidden = true
+      -- end)
+      --
+      -- cmp.event:on("menu_closed", function()
+      --   vim.b.copilot_suggestion_hidden = false
+      -- end)
 
       -- cmp.event:on("confirm_done", function(event)
       --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then

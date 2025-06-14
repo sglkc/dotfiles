@@ -30,6 +30,9 @@ return {
     dependencies = {
       { "zbirenbaum/copilot.lua" }
     },
+    config = function ()
+      require("copilot_cmp").setup()
+    end
   },
   {
     "CopilotC-Nvim/CopilotChat.nvim",
