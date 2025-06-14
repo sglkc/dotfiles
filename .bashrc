@@ -109,3 +109,9 @@ if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "`fnm env`"
 fi
+
+# android studio from apt
+export ANDROID_HOME="/usr/lib/android-sdk"
+if [ -d "$ANDROID_HOME" ]; then
+  export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin:$PATH"
+fi
