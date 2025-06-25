@@ -1,0 +1,7 @@
+[user]
+  email = cikal@zero-one-group.com
+  name = Cikal Gemintang Seya
+  signingkey = ~/.ssh/id_rsa.pub
+
+[init]
+  defaultBranch = main

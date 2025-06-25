@@ -1,10 +1,10 @@
 [user]
-	email = 31957516+sglkc@users.noreply.github.com
-	name = Seya
-	signingkey = /home/seya/.ssh/id_ed25519.pub
+  email = 31957516+sglkc@users.noreply.github.com
+  name = Seya
+  signingkey = ~/.ssh/id_ed25519.pub
 
 [core]
-	editor = nano
+  editor = nano
   autocrlf = input
 
 [diff]
@@ -23,7 +23,7 @@
   gpgSign = true
 
 [gpg "ssh"]
-  allowedSignersFile = /home/seya/.ssh/allowed_signers
+  allowedSignersFile = ~/.ssh/allowed_signers
 
 [tag]
   gpgSign = true
@@ -33,14 +33,17 @@
 
 [alias]
   timeline = log --graph --abbrev-commit --decorate --format=format:'%C(green)(%ad)%C(reset) %C(bold blue)%h%C(reset)%C(auto)%d%C(reset) %s%C(reset) %C(dim white)- %an%C(reset)' --all --date='format:%d/%m %R'
-	df = diff --cached
-	cm = commit -m
-	ca = commit --amend
-	s = status
-	d = diff
-	dc = diff --cached
+  df = diff --cached
+  cm = commit -m
+  ca = commit --amend
+  s = status
+  d = diff
+  dc = diff --cached
   l = log
   zip = archive --format=zip --output archive.zip
 
 [pull]
-	rebase = true
+  rebase = true
+
+[includeIf "hasconfig:remote.*.url:git@gitlab.zero-one-group.com:*/**"]
+  path = ~/.gitconfig-zog
