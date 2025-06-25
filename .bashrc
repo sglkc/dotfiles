@@ -87,8 +87,10 @@ LOCAL_BIN="$HOME/.local/bin"
 [[ -d "$LOCAL_BIN" ]] && export PATH="$LOCAL_BIN:$PATH"
 
 # zoxide for cd replacement
-eval "$(zoxide init bash)"
-alias cd=z
+if [[ -x "$(command -v zoxide)" ]]; then
+  eval "$(zoxide init bash)"
+  alias cd=z
+fi
 
 # unified package managers location
 [[ ! -d "$PACKAGE_STORE" ]] && mkdir -p "$PACKAGE_STORE"
@@ -96,6 +98,12 @@ export PNPM_HOME="$PACKAGE_STORE/pnpm"
 export UV_HOME="$PACKAGE_STORE/uv"
 export GOPATH="$PACKAGE_STORE/go"
 export COMPOSER_HOME="$PACKAGE_STORE/composer"
+
+if [[ -x "$(command -v pnpm)" ]]; then
+  export PNPM_HOME="$PNPM_HOME"
+  export PATH="$PATH:$PNPM_HOME"
+  eval "$(pnpm completion bash)"
+fi
 
 export PATH="$PATH:$PNPM_HOME:$UV_HOME/bin:$GOPATH/bin:/usr/local/go/bin:$COMPOSER_HOME/vendor/bin"
 
@@ -114,4 +122,9 @@ fi
 export ANDROID_HOME="/usr/lib/android-sdk"
 if [ -d "$ANDROID_HOME" ]; then
   export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin:$PATH"
+fi
+
+# moon
+if [[ -x "$(command -v moon)" ]]; then
+  eval "$(moon completions)"
 fi
