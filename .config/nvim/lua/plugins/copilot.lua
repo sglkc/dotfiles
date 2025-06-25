@@ -43,7 +43,7 @@ return {
     build = "make tiktoken", -- Only on MacOS or Linux
     opts = {
       model = "claude-sonnet-4",
-      insert_at_end = true,
+      -- insert_at_end = true,
       window = {
         width = 0.4,
         border = 'rounded',
