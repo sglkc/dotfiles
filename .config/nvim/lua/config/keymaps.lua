@@ -25,6 +25,7 @@ map('n', 'bd', ':bd<CR>')
 -- Quick window navigation
 map('n', 'ww', '<C-w><C-w>')
 map('n', 'wW', '<C-w><S-w>')
+map('n', 'WW', '<C-w><S-w>')
 map('n', 'wq', '<C-w><C-q>')
 map('n', 'w<Left>', '<C-w><Left>')
 map('n', 'w<Right>', '<C-w><Right>')
@@ -75,7 +76,7 @@ _G.compileAndRun = function()
     typescript = 'tsx %',
     go = 'go run .',
     java = 'javac %; java %:t:r',
-    python = 'python %:p:t',
+    python = 'python %',
     php = 'php %'
   }
 
