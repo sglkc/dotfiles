@@ -107,7 +107,8 @@ return {
         highlight_modified = "icon",
         icons = {
           modified_placement = "signcolumn",
-        }
+        },
+        indent_width = 1,
       },
       modified = {
         enable = true
