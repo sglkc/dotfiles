@@ -112,7 +112,7 @@ DOTNET_DIR="$HOME/.dotnet/tools"
 [[ -d "$DOTNET_DIR" ]] && export PATH="$PATH:$DOTNET_DIR"
 
 # fnm
-FNM_PATH="/home/seya/.local/share/fnm"
+FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then
   export PATH="$FNM_PATH:$PATH"
   eval "`fnm env`"
@@ -128,3 +128,10 @@ fi
 if [[ -x "$(command -v moon)" ]]; then
   eval "$(moon completions)"
 fi
+
+# venv shortcut
+alias venv='source .venv/bin/activate'
+
+# opencode
+OPENCODE_PATH="$HOME/.opencode/bin"
+[[ -d "$OPENCODE_PATH" ]] && export PATH="$PATH:$OPENCODE_PATH"
