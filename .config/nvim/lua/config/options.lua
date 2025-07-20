@@ -48,5 +48,6 @@ opt.splitbelow = true
 opt.cursorline = true
 opt.pumwidth = 25
 opt.pumheight = 20
+opt.laststatus = 3
 -- opt.pumblend=10
 -- opt.winblend=10
