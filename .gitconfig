@@ -40,7 +40,7 @@
 [pull]
   rebase = true
 
-[includeIf "hasconfig:remote.*.url:git@github.com:*/**"]
+[include]
   path = ~/.gitconfig-gh
 
 [includeIf "hasconfig:remote.*.url:git@gitlab.zero-one-group.com:*/**"]

@@ -131,7 +131,3 @@ fi
 
 # venv shortcut
 alias venv='source .venv/bin/activate'
-
-# opencode
-OPENCODE_PATH="$HOME/.opencode/bin"
-[[ -d "$OPENCODE_PATH" ]] && export PATH="$PATH:$OPENCODE_PATH"
