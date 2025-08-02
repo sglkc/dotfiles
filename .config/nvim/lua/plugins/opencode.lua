@@ -31,9 +31,9 @@ return {
     keys = {
       -- opencode.nvim exposes a general, flexible API — customize it to your workflow!
       -- But here are some examples to get you started :)
-      { '<leader>ot', function() require('opencode').toggle() end, desc = 'Toggle opencode', },
-      { '<leader>oa', function() require('opencode').ask() end, desc = 'Ask opencode', mode = { 'n', 'v' }, },
-      { '<leader>on', function() require('opencode').command('/new') end, desc = 'New session', },
+      { '<leader>ait', function() require('opencode').toggle() end, desc = 'Toggle opencode', },
+      { '<leader>aia', function() require('opencode').ask() end, desc = 'Ask opencode', mode = { 'n', 'v' }, },
+      { '<leader>ain', function() require('opencode').command('/new') end, desc = 'New session', },
     },
   }
 }
