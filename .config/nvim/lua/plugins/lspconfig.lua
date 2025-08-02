@@ -235,12 +235,12 @@ return {
           desc = 'Open LSP Action Menu' -- Description for which-key or other plugins
         })
 
-        vim.notify("LSP Action Menu mapped to <Leader><CR>", vim.log.levels.INFO)
+        -- vim.notify("LSP Action Menu mapped to <Leader><CR>", vim.log.levels.INFO)
       end
 
       local root_dir = require('lspconfig').util.root_pattern(
-        '.git', '.gitignore', 'package.json', 'node_modules', 'composer.json',
-        'index.php', 'pubspec.yaml', '.clangd'
+        'index.php', 'pubspec.yaml', '.clangd', 'go.mod', 'pyproject.toml',
+        '.git', 'package.json', 'node_modules', 'composer.json'
       )
 
       local register_capability = vim.lsp.handlers["client/registerCapability"]
