@@ -1,14 +1,3 @@
-local function get_git_root_fs(dir)
-  local current_dir = vim.fn.fnamemodify(dir, ':p')
-  while current_dir ~= '/' do
-    if vim.fn.isdirectory(current_dir .. '/.git') == 1 then
-      return current_dir
-    end
-    current_dir = vim.fn.fnamemodify(current_dir, ':h')
-  end
-  return nil
-end
-
 local actions = require('telescope.actions')
 
 return {
@@ -18,6 +7,20 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-ui-select.nvim",
       {
+        'ahmedkhalf/project.nvim',
+        opts = {
+          silent_chdir = false,
+          patterns = {
+            "Makefile", "go.mod", "pyproject.toml",
+            "composer.json", "package.json", "node_modules",
+            ".git",
+          },
+        },
+        config = function(_, opts)
+          require('project_nvim').setup(opts)
+        end
+      },
+      {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
       },
@@ -25,34 +28,22 @@ return {
     keys = {
       {
         "<leader>.",
-        function()
-          require("telescope.builtin").find_files({ cwd = vim.fn.expand('%:p:h') })
-        end,
+        function() pcall(require("telescope").extensions.projects.projects) end,
         desc = "Find files from current directory (Telescope)",
       },
       {
         "<leader>p",
-        function()
-          local opts = {}
-          local git_root = get_git_root_fs(opts.cwd)
-          if git_root then opts.cwd = git_root end
-          require("telescope.builtin").find_files(opts)
-        end,
+        require("telescope.builtin").find_files,
         desc = "Find project files (Telescope)",
       },
       {
         "<leader>f",
-        function()
-          local opts = {}
-          local git_root = get_git_root_fs(opts.cwd)
-          if git_root then opts.cwd = git_root end
-          require("telescope.builtin").live_grep(opts)
-        end,
+        require("telescope.builtin").live_grep,
         desc = "Ripgrep project files (Telescope)",
       },
       {
         "<leader>b",
-        function() require("telescope.builtin").buffers() end,
+        require("telescope.builtin").buffers,
         desc = "Find buffers (Telescope)",
       },
     },
@@ -108,6 +99,7 @@ return {
     config = function(_, opts)
       require('telescope').setup(opts)
       require('telescope').load_extension('fzf')
+      require("telescope").load_extension('projects')
       require('telescope').load_extension('ui-select')
     end
   }
