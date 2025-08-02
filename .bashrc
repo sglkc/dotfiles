@@ -86,12 +86,6 @@ bind '"\C-H": shell-backward-kill-word'
 LOCAL_BIN="$HOME/.local/bin"
 [[ -d "$LOCAL_BIN" ]] && export PATH="$LOCAL_BIN:$PATH"
 
-# zoxide for cd replacement
-if [[ -x "$(command -v zoxide)" ]]; then
-  eval "$(zoxide init bash)"
-  alias cd=z
-fi
-
 # unified package managers location
 [[ ! -d "$PACKAGE_STORE" ]] && mkdir -p "$PACKAGE_STORE"
 export PNPM_HOME="$PACKAGE_STORE/pnpm"
@@ -131,3 +125,10 @@ fi
 
 # venv shortcut
 alias venv='source .venv/bin/activate'
+
+# zoxide for cd replacement, always put at the end!
+if [[ -x "$(command -v zoxide)" ]]; then
+  eval "$(zoxide init bash)"
+  alias cd=z
+  export _ZO_DOCTOR=0
+fi
