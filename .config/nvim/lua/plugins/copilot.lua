@@ -13,17 +13,14 @@ return {
         --   accept = "<S-Tab>", -- handled by nvim-cmp / blink.cmp
         -- next = "<M-]>",
         -- prev = "<M-[>",
+        -- },
       },
+      panel = { enabled = false },
+      copilot_model = "claude-sonnet-4",
+      should_attach = function(_, _)
+        return false
+      end
     },
-    panel = { enabled = false },
-    copilot_model = "claude-sonnet-4",
-    filetypes = {
-      markdown = true,
-      help = true,
-    },
-    -- should_attach = function(_, _)
-    --   return false
-    -- end
   },
   {
     "zbirenbaum/copilot-cmp",
