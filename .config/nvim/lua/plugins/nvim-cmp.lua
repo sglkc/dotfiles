@@ -1,30 +1,28 @@
 return {
   {
     "hrsh7th/nvim-cmp",
-    -- version = false,
-    -- branch = "perf-up",
-    event = "InsertEnter",
+    event = { "InsertEnter", "CmdlineEnter" },
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      -- "saadparwaiz1/cmp_luasnip",
-      -- {
-      --   "L3MON4D3/LuaSnip",
-      --   dependencies = {
-      --     {
-      --       "rafamadriz/friendly-snippets",
-      --       config = function()
-      --         require("luasnip.loaders.from_vscode").lazy_load()
-      --       end,
-      --     }
-      --   },
-      -- keys = function() return {} end,
-      -- opts = {
-      --   history = true,
-      --   delete_check_events = "TextChanged",
-      -- },
-      -- },
+      "saadparwaiz1/cmp_luasnip",
+      {
+        "L3MON4D3/LuaSnip",
+        dependencies = {
+          {
+            "rafamadriz/friendly-snippets",
+            config = function()
+              require("luasnip.loaders.from_vscode").lazy_load()
+            end,
+          }
+        },
+        keys = function() return {} end,
+        opts = {
+          history = true,
+          delete_check_events = "TextChanged",
+        },
+      },
       "onsails/lspkind.nvim"
     },
     opts = function()
@@ -41,41 +39,8 @@ return {
       vim.api.nvim_set_hl(0, 'CmpItemKindUnit', { link = 'CmpItemKindKeyword' })
       vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
 
-      -- local luasnip = require("luasnip")
+      local luasnip = require("luasnip")
       local cmp = require("cmp")
-      local defaults = require("cmp.config.default")()
-
-      local lspkind_comparator = function(conf)
-        local lsp_types = require('cmp.types').lsp
-        return function(entry1, entry2)
-          if entry1.source.name ~= 'nvim_lsp' then
-            if entry2.source.name == 'nvim_lsp' then
-              return false
-            else
-              return nil
-            end
-          end
-          local kind1 = lsp_types.CompletionItemKind[entry1:get_kind()]
-          local kind2 = lsp_types.CompletionItemKind[entry2:get_kind()]
-
-          local priority1 = conf.kind_priority[kind1] or 0
-          local priority2 = conf.kind_priority[kind2] or 0
-          if priority1 == priority2 then
-            return nil
-          end
-          return priority2 < priority1
-        end
-      end
-
-      local label_comparator = function(entry1, entry2)
-        return entry1.completion_item.label < entry2.completion_item.label
-      end
-
-      local has_words_before = function()
-        unpack = unpack or table.unpack
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
 
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
@@ -95,24 +60,20 @@ return {
           },
           documentation = cmp.config.window.bordered()
         },
-        -- snippet = {
-        --   expand = function(args)
-        --     luasnip.lsp_expand(args.body)
-        --   end
-        -- },
+        snippet = {
+          expand = function(args)
+            require('luasnip').lsp_expand(args.body)
+          end
+        },
         sources = {
-          -- { name = "luasnip", priority = 15, max_item_count = 3 },
-          {
-            name = "copilot",
-            group_index = 1,
-            priority = 20,
-          },
+          { name = "copilot", group_index = 1, priority = 20 },
+          { name = "luasnip", group_index = 1, priority = 15, max_item_count = 3 },
           {
             name = "nvim_lsp",
             priority = 10,
             group_index = 1,
             max_item_count = 50,
-            entry_filter = function(entry, ctx)
+            entry_filter = function(entry, _)
               return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
             end
           },
@@ -139,94 +100,42 @@ return {
           })
         },
         mapping = {
-          ['<Tab>'] = function(fallback)
-            if not cmp.select_next_item() then
-              if vim.bo.buftype ~= 'prompt' and has_words_before() then
-                cmp.complete()
-              else
-                fallback()
-              end
+          ["<Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_next_item()
+            elseif luasnip.locally_jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
             end
-          end,
-          ['<S-Tab>'] = function(fallback)
-            if not cmp.select_prev_item() then
-              if vim.bo.buftype ~= 'prompt' and has_words_before() then
-                cmp.complete()
-              else
-                fallback()
-              end
+          end, { "i", "s" }),
+
+          ["<S-Tab>"] = cmp.mapping(function(fallback)
+            if cmp.visible() then
+              cmp.select_prev_item()
+            elseif luasnip.locally_jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
             end
-          end,
+          end, { "i", "s" }),
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
           ["<C-Space>"] = cmp.mapping.complete(),
           ["<C-e>"] = cmp.mapping.abort(),
-          ["<CR>"] = cmp.mapping.confirm({
-            behavior = cmp.ConfirmBehavior.Replace,
-            select = true,
+          ["<CR>"] = cmp.mapping({
+            i = function(fallback)
+              if cmp.visible() and cmp.get_active_entry() then
+                cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+              else
+                fallback()
+              end
+            end,
+            s = cmp.mapping.confirm({ select = true }),
+            c = cmp.mapping.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = true }),
           }),
         },
-        -- sorting = {
-        --   comparators = {
-        --     cmp.config.compare.exact,
-        --     cmp.config.compare.offset,
-        --     cmp.config.compare.score,
-        --     lspkind_comparator({
-        --       kind_priority = {
-        --         Variable = 12,
-        --         Field = 11,
-        --         Property = 11,
-        --         Constant = 10,
-        --         Enum = 10,
-        --         EnumMember = 10,
-        --         Event = 10,
-        --         Function = 10,
-        --         Method = 10,
-        --         Operator = 10,
-        --         Reference = 10,
-        --         Struct = 10,
-        --         File = 8,
-        --         Folder = 8,
-        --         Class = 5,
-        --         Color = 5,
-        --         Module = 5,
-        --         Keyword = 2,
-        --         Constructor = 1,
-        --         Interface = 1,
-        --         Snippet = 0,
-        --         Text = -1,
-        --         TypeParameter = 1,
-        --         Unit = 1,
-        --         Value = 1,
-        --       },
-        --     }),
-        --     -- cmp.config.compare.kind,
-        --     -- cmp.config.compare.sort_text,
-        --     cmp.config.compare.length,
-        --     cmp.config.compare.order,
-        --     -- label_comparator,
-        --   },
-        -- },
       }
-    end,
-    ---@param opts cmp.ConfigSchema | {auto_brackets?: string[]}
-    config = function(_, opts)
-      local cmp = require("cmp")
-      local Kind = cmp.lsp.CompletionItemKind
-
-      cmp.setup(opts)
-
-      -- cmp.event:on("confirm_done", function(event)
-      --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then
-      --     return
-      --   end
-      --   local entry = event.entry
-      --   local item = entry:get_completion_item()
-      --   if vim.tbl_contains({ Kind.Function, Kind.Method }, item.kind) then
-      --     local keys = vim.api.nvim_replace_termcodes("()<left>", false, false, true)
-      --     vim.api.nvim_feedkeys(keys, "i", true)
-      --   end
-      -- end)
     end,
   }
 }
