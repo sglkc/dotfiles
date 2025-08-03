@@ -1,8 +1,8 @@
 return {
   {
-    "yioneko/nvim-cmp",
+    "hrsh7th/nvim-cmp",
     -- version = false,
-    branch = "perf-up",
+    -- branch = "perf-up",
     event = "InsertEnter",
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
@@ -19,27 +19,27 @@ return {
       --       end,
       --     }
       --   },
-        -- keys = function() return {} end,
-        -- opts = {
-        --   history = true,
-        --   delete_check_events = "TextChanged",
-        -- },
+      -- keys = function() return {} end,
+      -- opts = {
+      --   history = true,
+      --   delete_check_events = "TextChanged",
+      -- },
       -- },
       "onsails/lspkind.nvim"
     },
     opts = function()
-      vim.api.nvim_set_hl(0, 'CmpItemAbbrDeprecated', { bg='NONE', strikethrough=true, fg='#808080' })
-      vim.api.nvim_set_hl(0, 'CmpItemAbbrMatch', { bg='NONE', fg='#569CD6' })
-      vim.api.nvim_set_hl(0, 'CmpItemAbbrMatchFuzzy', { link='CmpIntemAbbrMatch' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindFile', { link='CmpItemKindFolder' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindVariable', { bg='NONE', fg='#C099FF' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindInterface', { link='CmpItemKindVariable' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindFunction', { bg='NONE', fg='#82AAFF' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindMethod', { link='CmpItemKindFunction' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindKeyword', { bg='NONE', fg='#89ddff' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindProperty', { link='CmpItemKindKeyword' })
-      vim.api.nvim_set_hl(0, 'CmpItemKindUnit', { link='CmpItemKindKeyword' })
-      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg ="#6CC644" })
+      vim.api.nvim_set_hl(0, 'CmpItemAbbrDeprecated', { bg = 'NONE', strikethrough = true, fg = '#808080' })
+      vim.api.nvim_set_hl(0, 'CmpItemAbbrMatch', { bg = 'NONE', fg = '#569CD6' })
+      vim.api.nvim_set_hl(0, 'CmpItemAbbrMatchFuzzy', { link = 'CmpIntemAbbrMatch' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindFile', { link = 'CmpItemKindFolder' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindVariable', { bg = 'NONE', fg = '#C099FF' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindInterface', { link = 'CmpItemKindVariable' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindFunction', { bg = 'NONE', fg = '#82AAFF' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindMethod', { link = 'CmpItemKindFunction' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindKeyword', { bg = 'NONE', fg = '#89ddff' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindProperty', { link = 'CmpItemKindKeyword' })
+      vim.api.nvim_set_hl(0, 'CmpItemKindUnit', { link = 'CmpItemKindKeyword' })
+      vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
 
       -- local luasnip = require("luasnip")
       local cmp = require("cmp")
@@ -72,23 +72,21 @@ return {
       end
 
       local has_words_before = function()
-        if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+        unpack = unpack or table.unpack
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
       end
 
       return {
         auto_brackets = {}, -- configure any filetype to auto add brackets
-        completion = {
-          completeopt = "menu,menuone,noselect,preview",
-        },
+        preselect = cmp.PreselectMode.None,
         performance = {
-          debounce = 60, -- 60
-          throttle = 10, -- 30
-          fetching_timeout = 50, -- 500  -- 100
+          debounce = 60,                -- 60
+          throttle = 10,                -- 30
+          fetching_timeout = 50,        -- 500  -- 100
           confirm_resolve_timeout = 10, -- 80  -- 50
-          async_budget = 1, -- 1
-          max_view_entries = 200, -- 200
+          async_budget = 1,             -- 1
+          max_view_entries = 200,       -- 200
         },
         window = {
           completion = {
@@ -118,16 +116,16 @@ return {
               return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
             end
           },
-          { name = "path", priority = 3, max_item_count = 5, group_index = 2 },
+          { name = "path",   priority = 3, max_item_count = 5, group_index = 2 },
           { name = "buffer", priority = 1, max_item_count = 5, group_index = 2 },
         },
         formatting = {
-          fields = {'menu', 'abbr', 'kind'},
+          fields = { 'menu', 'abbr', 'kind' },
           format = require('lspkind').cmp_format({
             mode = 'symbol_text',
             maxwidth = 20,
             ellipsis_char = '…',
-            before = function (entry, vim_item)
+            before = function(entry, vim_item)
               local menu_icon = {
                 copilot = '',
                 nvim_lsp = 'λ',
@@ -141,28 +139,23 @@ return {
           })
         },
         mapping = {
-          ["<Tab>"] = vim.schedule_wrap(function(fallback)
-            if cmp.visible() and has_words_before() then
-              cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-            else
-              fallback()
+          ['<Tab>'] = function(fallback)
+            if not cmp.select_next_item() then
+              if vim.bo.buftype ~= 'prompt' and has_words_before() then
+                cmp.complete()
+              else
+                fallback()
+              end
             end
-          end),
-          -- ['<Tab>'] = function(fallback)
-          --   if cmp.visible() then
-          --     return cmp.select_next_item()
-          --     -- elseif luasnip.jumpable(1) then
-          --     --   return luasnip.jump(1)
-          --   end
-          --   fallback()
-          -- end,
+          end,
           ['<S-Tab>'] = function(fallback)
-            if cmp.visible() then
-              return cmp.select_prev_item()
-              -- elseif luasnip.jumpable(-1) then
-              --   return luasnip.jump(-1)
+            if not cmp.select_prev_item() then
+              if vim.bo.buftype ~= 'prompt' and has_words_before() then
+                cmp.complete()
+              else
+                fallback()
+              end
             end
-            fallback()
           end,
           ["<C-b>"] = cmp.mapping.scroll_docs(-4),
           ["<C-f>"] = cmp.mapping.scroll_docs(4),
@@ -222,14 +215,6 @@ return {
       local Kind = cmp.lsp.CompletionItemKind
 
       cmp.setup(opts)
-
-      -- cmp.event:on("menu_opened", function()
-      --   vim.b.copilot_suggestion_hidden = true
-      -- end)
-      --
-      -- cmp.event:on("menu_closed", function()
-      --   vim.b.copilot_suggestion_hidden = false
-      -- end)
 
       -- cmp.event:on("confirm_done", function(event)
       --   if not vim.tbl_contains(opts.auto_brackets or {}, vim.bo.filetype) then

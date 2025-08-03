@@ -14,16 +14,22 @@ return {
           vim.g.matchup_transmute_enabled = 1 -- html element replace
 
           vim.g.matchup_delim_noskips = 1
-          vim.g.matchup_delim_stopline = 1000 -- 1500
-          vim.g.matchup_matchparen_stopline = 200 -- 400
+          vim.g.matchup_delim_stopline = 1000          -- 1500
+          vim.g.matchup_matchparen_stopline = 200      -- 400
 
-          vim.g.matchup_matchparen_timeout = 100 -- 300
+          vim.g.matchup_matchparen_timeout = 100       -- 300
           vim.g.matchup_matchparen_insert_timeout = 60 -- 60
 
           vim.g.matchup_matchparen_deferred = 1
-          vim.g.matchup_matchparen_deferred_show_delay = 50 -- 50
+          vim.g.matchup_matchparen_deferred_show_delay = 50  -- 50
           vim.g.matchup_matchparen_deferred_hide_delay = 300 -- 700
           vim.g.matchup_matchparen_pumvisible = 0
+
+          local ok, cmp = pcall(require, "cmp")
+          if ok then
+            cmp.event:on("menu_opened", function() vim.b.matchup_matchparen_enabled = false end)
+            cmp.event:on("menu_closed", function() vim.b.matchup_matchparen_enabled = true end)
+          end
         end
       }
     },
