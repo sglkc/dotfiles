@@ -19,6 +19,9 @@ return {
 
       local animate = require("mini.animate")
       return {
+        cursor = {
+          enable = false
+        },
         -- Window open/close not working with transparent background
         open = {
           enable = false

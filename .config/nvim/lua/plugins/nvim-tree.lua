@@ -8,7 +8,7 @@ return {
     keys = {
       {
         '<leader>n',
-        function ()
+        function()
           local nvimTree = require("nvim-tree.api")
           local currentBuf = vim.api.nvim_get_current_buf()
           local currentBufFt = vim.api.nvim_get_option_value(
@@ -59,8 +59,11 @@ return {
 
         local function opts(desc)
           return {
-            desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true,
-            silent = true, nowait = true
+            desc = 'nvim-tree: ' .. desc,
+            buffer = bufnr,
+            noremap = true,
+            silent = true,
+            nowait = true
           }
         end
 
@@ -82,7 +85,6 @@ return {
 
               if gs == "??" or gs == "MM" or gs == "AM" or gs == " M" then
                 vim.cmd("silent !git add " .. node.absolute_path)
-
               elseif gs == "M " or gs == "A " then
                 vim.cmd("silent !git restore --staged " .. node.absolute_path)
               end
@@ -115,10 +117,10 @@ return {
       },
       sync_root_with_cwd = true,
       respect_buf_cwd = true,
-      update_focused_file = {
-        enable = true,
-        update_root = true
-      },
+      -- update_focused_file = {
+      --   enable = true,
+      --   update_root = true
+      -- },
     }
   }
 }
