@@ -7,7 +7,7 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-ui-select.nvim",
       {
-        'ahmedkhalf/project.nvim',
+        'DrKJeff16/project.nvim',
         opts = {
           silent_chdir = false,
           patterns = {
