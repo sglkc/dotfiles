@@ -83,7 +83,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
     -- Custom LSP action menu (preserving your original functionality)
     local function lsp_buf_hover()
-      vim.lsp.buf.hover({ border = "rounded" })
+      vim.lsp.buf.hover({ border = "rounded", focusable = false })
     end
 
     local lsp_actions = {
