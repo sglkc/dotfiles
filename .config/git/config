@@ -41,7 +41,7 @@
   rebase = true
 
 [include]
-  path = ~/.gitconfig-gh
+  path = ~/.config/git/profiles/github
 
 [includeIf "hasconfig:remote.*.url:git@gitlab.zero-one-group.com:*/**"]
-  path = ~/.gitconfig-zog
+  path = ~/.config/git/profiles/zero-one-group

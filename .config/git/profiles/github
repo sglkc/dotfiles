@@ -1,0 +1,6 @@
+# vim: set filetype=gitconfig:
+
+[user]
+  email = 31957516+sglkc@users.noreply.github.com
+  name = Seya
+  signingkey = ~/.ssh/id_ed25519.pub
