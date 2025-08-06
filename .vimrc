@@ -1,31 +1,31 @@
 " Autoexec
-set updatetime=1000
+set updatetime=300
 set tabstop=2
 set shiftwidth=2
+set expandtab
 set cursorline
-set colorcolumn=1
 set number relativenumber
-set guicursor+=a:-blinkwait175-blinkoff150-blinkon175
+set signcolumn=yes
+set guicursor=n-v-c:block,i-ci-ve:ver25,r-cr:hor20,o:hor50
 set clipboard=unnamedplus
-set autochdir
 set mouse=a
 set ignorecase
 set smartcase
+set shortmess+=c
 set colorcolumn=80
-highlight ColorColumn ctermbg=0
 set synmaxcol=400
 syntax sync minlines=100
 
 " Custom Commands
-map <C-b><C-n> :bn!<CR>
-map <C-b><C-p> :bp!<CR>
-map <C-b><C-d> :bd!<CR>
-map bn :bn!<CR>
-map bp :bp!<CR>
-map bd :bd!<CR>
-map ww <C-w><C-w>
-map wa <C-w><S-w>
-map wq <C-w><C-q>
+nnoremap <C-b><C-n> :bn!<CR>
+nnoremap <C-b><C-p> :bp!<CR>
+nnoremap <C-b><C-d> :bd!<CR>
+nnoremap bn :bn!<CR>
+nnoremap bp :bp!<CR>
+nnoremap bd :bd!<CR>
+nnoremap ww <C-w><C-w>
+nnoremap wa <C-w><S-w>
+nnoremap wq <C-w><C-q>
 tnoremap <Esc> <C-\><C-n>
 nnoremap <C-Down> :m .+1<CR>
 nnoremap <C-Up> :m .-2<CR>
@@ -35,9 +35,4 @@ if (has('termguicolors'))
  set termguicolors
 endif
 let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-"colorscheme night-owl
-syntax enable
-hi MatchParen guibg=black ctermbg=black guifg=white ctermfg=white gui=underline cterm=underline
-hi ColorColumn guibg=#011740 ctermbg=235
-hi LineNr guifg=#6f6f6f ctermfg=238
-hi Normal guibg=NONE
+colorscheme zaibatsu
