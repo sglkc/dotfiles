@@ -10,7 +10,6 @@
   "copilot-cmp": { "branch": "master", "commit": "15fc12af3d0109fa76b60b5cffa1373697e261d1" },
   "copilot.lua": { "branch": "master", "commit": "0f2fd3829dd27d682e46c244cf48d9715726f612" },
   "friendly-snippets": { "branch": "main", "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175" },
-  "garbage-day.nvim": { "branch": "main", "commit": "cce4a0b394d33878bde3c1648f4e6b358e8769bb" },
   "gitsigns.nvim": { "branch": "main", "commit": "8270378ab83540b03d09c0194ba3e208f9d0cb72" },
   "lazy.nvim": { "branch": "main", "commit": "6c3bda4aca61a13a9c63f1c1d1b16b9d3be90d7a" },
   "lazygit.nvim": { "branch": "main", "commit": "cdd3527e251f96eb0527162b156ad839286fcd97" },
@@ -38,6 +37,7 @@
   "transparent.nvim": { "branch": "main", "commit": "8ac59883de84e9cd1850ea25cf087031c5ba7d54" },
   "treesj": { "branch": "main", "commit": "3b4a2bc42738a63de17e7485d4cc5e49970ddbcc" },
   "ultimate-autopair.nvim": { "branch": "v0.6", "commit": "b24b97c538b71b6de0ce9d84e47df27b6ecafd76" },
+  "vim-abolish": { "branch": "master", "commit": "dcbfe065297d31823561ba787f51056c147aa682" },
   "vim-blade": { "branch": "master", "commit": "9534101808cc320eef003129a40cab04b026a20c" },
   "vim-matchup": { "branch": "master", "commit": "81313f17443df6974cafa094de52df32b860e1b7" }
 }
