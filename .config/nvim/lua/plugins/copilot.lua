@@ -16,7 +16,7 @@ return {
         -- },
       },
       panel = { enabled = false },
-      copilot_model = "claude-sonnet-4",
+      copilot_model = "gpt-4.1",
       should_attach = function(_, _)
         return false
       end
@@ -27,7 +27,7 @@ return {
     dependencies = {
       { "zbirenbaum/copilot.lua" }
     },
-    config = function ()
+    config = function()
       require("copilot_cmp").setup()
     end
   },
@@ -37,7 +37,7 @@ return {
       { "zbirenbaum/copilot.lua" },
       { "nvim-lua/plenary.nvim", branch = "master" }, -- for curl, log and async functions
     },
-    build = "make tiktoken", -- Only on MacOS or Linux
+    build = "make tiktoken",                          -- Only on MacOS or Linux
     opts = {
       model = "claude-sonnet-4",
       -- insert_at_end = true,
@@ -49,7 +49,7 @@ return {
     init = function()
       vim.api.nvim_create_autocmd('BufEnter', {
         pattern = 'copilot-*',
-        callback = function ()
+        callback = function()
           vim.opt_local.conceallevel = 0
         end
       })
