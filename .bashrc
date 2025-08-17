@@ -8,8 +8,6 @@
 # Ubuntu default bashrc
 [ -f /etc/bash.bashrc ] && source /etc/bash.bashrc
 
-PACKAGE_STORE="$HOME/.packages"
-
 alias l='ls'
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -87,7 +85,13 @@ LOCAL_BIN="$HOME/.local/bin"
 [[ -d "$LOCAL_BIN" ]] && export PATH="$LOCAL_BIN:$PATH"
 
 # unified package managers location
-[[ ! -d "$PACKAGE_STORE" ]] && mkdir -p "$PACKAGE_STORE"
+PACKAGE_STORE="/opt/packages"
+# Ensure /opt/packages exists and is owned by the current user
+if [[ ! -d /opt/packages ]]; then
+  echo 'Creating package managers cache directory'
+  sudo mkdir -p /opt/packages
+  sudo chown "$USER":"$USER" /opt/packages
+fi
 export PNPM_HOME="$PACKAGE_STORE/pnpm"
 export UV_HOME="$PACKAGE_STORE/uv"
 export GOPATH="$PACKAGE_STORE/go"
