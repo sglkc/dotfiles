@@ -9,7 +9,7 @@ return {
       {
         'DrKJeff16/project.nvim',
         opts = {
-          silent_chdir = false,
+          silent_chdir = true,
           patterns = {
             "Makefile", "go.mod", "pyproject.toml",
             "composer.json", "package.json", "node_modules",
@@ -17,7 +17,7 @@ return {
           },
         },
         config = function(_, opts)
-          require('project_nvim').setup(opts)
+          require('project').setup(opts)
         end
       },
       {
@@ -50,8 +50,8 @@ return {
     opts = {
       defaults = {
         path_display = {
-          shorten = 5,
-          truncate = 3
+          shorten = 10,
+          truncate = 5
         },
         vimgrep_arguments = {
           "rg", "--color=never", "--no-heading", "--with-filename",

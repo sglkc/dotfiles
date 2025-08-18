@@ -5,6 +5,8 @@ return {
       local notify = require('notify')
 
       notify.setup({
+        render = "wrapped-compact",
+        max_width = 50,
         timeout = 3000,
         stages = "static",
         on_open = function(win)
