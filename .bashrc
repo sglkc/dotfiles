@@ -92,10 +92,12 @@ if [[ ! -d /opt/packages ]]; then
   sudo mkdir -p /opt/packages
   sudo chown "$USER":"$USER" /opt/packages
 fi
-export PNPM_HOME="$PACKAGE_STORE/pnpm"
-export UV_HOME="$PACKAGE_STORE/uv"
-export GOPATH="$PACKAGE_STORE/go"
-export COMPOSER_HOME="$PACKAGE_STORE/composer"
+
+if [[ -x "$(command -v npm)" ]]; then
+  export NPM_HOME="$PACKAGE_STORE/npm"
+  export PATH="$PATH:$NPM_HOME/bin"
+  # eval "$(npm completion)"
+fi
 
 if [[ -x "$(command -v pnpm)" ]]; then
   export PNPM_HOME="$PNPM_HOME"
@@ -103,7 +105,20 @@ if [[ -x "$(command -v pnpm)" ]]; then
   eval "$(pnpm completion bash)"
 fi
 
-export PATH="$PATH:$PNPM_HOME:$UV_HOME/bin:$GOPATH/bin:/usr/local/go/bin:$COMPOSER_HOME/vendor/bin"
+if [[ -x "$(command -v uv)" ]]; then
+  export UV_HOME="$PACKAGE_STORE/uv"
+  export PATH="$PATH:$UV_HOME/bin"
+fi
+
+if [[ -x "$(command -v go)" ]]; then
+  export GOPATH="$PACKAGE_STORE/go"
+  export PATH="$PATH:$GOPATH/bin"
+fi
+
+if [[ -x "$(command -v uv)" ]]; then
+  export COMPOSER_HOME="$PACKAGE_STORE/composer"
+  export PATH="$PATH:$COMPOSER_HOME/vendor/bin"
+fi
 
 # dotnet
 DOTNET_DIR="$HOME/.dotnet/tools"
