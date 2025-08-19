@@ -96,11 +96,11 @@ fi
 if [[ -x "$(command -v npm)" ]]; then
   export NPM_HOME="$PACKAGE_STORE/npm"
   export PATH="$PATH:$NPM_HOME/bin"
-  # eval "$(npm completion)"
+  eval "$(npm completion)"
 fi
 
 if [[ -x "$(command -v pnpm)" ]]; then
-  export PNPM_HOME="$PNPM_HOME"
+  export PNPM_HOME="$PACKAGE_STORE/pnpm"
   export PATH="$PATH:$PNPM_HOME"
   eval "$(pnpm completion bash)"
 fi
