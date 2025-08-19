@@ -1,0 +1,20 @@
+#!/bin/sh
+# vim: filetype=sh:
+
+while read local_ref local_sha remote_ref remote_sha
+do
+    # Extract branch name (e.g. refs/heads/main → main)
+    branch=$(echo "$remote_ref" | sed 's|refs/heads/||')
+
+    if [ "$branch" = "main" ]; then
+        echo "⚠️  WARNING: You are about to push directly to 'main' branch!"
+        read -p "Do you want to continue? [y/N] " choice
+        case "$choice" in
+          y|Y ) echo "Proceeding with push..."; exit 0 ;;
+          * ) echo "Push to main aborted."; exit 1 ;;
+        esac
+    fi
+done
+
+exit 0
+
