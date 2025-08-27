@@ -1,4 +1,4 @@
-local global_node_modules_path = vim.fn.expand('~/.packages/pnpm/global/5/node_modules/')
+local global_node_modules_path = vim.fn.expand('/opt/packages/pnpm/global/5/node_modules/')
 
 return {
   cmd = { "vtsls", "--stdio" },

@@ -34,11 +34,34 @@ vim.diagnostic.config({
   },
 })
 
--- Auto-show diagnostics on cursor hold
+local diag_float_win = nil
+
+-- Auto-show diagnostics on CursorHold
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
   group = vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true }),
   callback = function()
-    vim.diagnostic.open_float(nil, { focusable = false, scope = 'cursor' })
+    -- close previous one if still valid
+    if diag_float_win and vim.api.nvim_win_is_valid(diag_float_win) then
+      vim.api.nvim_win_close(diag_float_win, true)
+    end
+
+    local _, winid = vim.diagnostic.open_float(nil, {
+      focusable = false,
+      scope = "cursor",
+    })
+
+    diag_float_win = winid
+  end,
+})
+
+-- Auto-close when leaving buffer/window
+vim.api.nvim_create_autocmd({ "BufLeave", "TabLeave", "WinLeave" }, {
+  group = vim.api.nvim_create_augroup("lsp_diagnostics_close", { clear = true }),
+  callback = function()
+    if diag_float_win and vim.api.nvim_win_is_valid(diag_float_win) then
+      vim.api.nvim_win_close(diag_float_win, true)
+      diag_float_win = nil
+    end
   end,
 })
 
