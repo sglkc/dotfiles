@@ -6,16 +6,28 @@ return {
       'lewis6991/gitsigns.nvim',
       'nvim-tree/nvim-web-devicons'
     },
-    keys = {
-      { 'bn', '<cmd>BufferNext<cr>', desc = 'buffer next' },
-      { 'bp', '<cmd>BufferPrevious<cr>', desc = 'buffer previous' },
-      { 'bd', '<cmd>BufferClose<cr>', desc = 'buffer close' },
-      { '<C-Tab>', '<cmd>BufferNext<cr>', desc = 'buffer next', mode = {'n','i','t'} },
-      { '<C-S-Tab>', '<cmd>BufferPrevious<cr>', desc = 'buffer previous', mode = {'n','i','t'} },
-      { '<C-w>', '<cmd>BufferClose<cr>', desc = 'buffer close', mode = 'n' },
-      { '<A-Left>', '<cmd>BufferMovePrevious<cr>', desc = 'buffer move left' },
-      { '<A-Right>', '<cmd>BufferMoveNext<cr>', desc = 'buffer move right' },
-    },
+    keys = function ()
+      local goto = function (num) vim.cmd.BufferGoto(num) end
+      return {
+        { 'bn',        vim.cmd.BufferNext, desc = 'buffer next' },
+        { 'bp',        vim.cmd.BufferPrevious, desc = 'buffer previous' },
+        { 'bd',        vim.cmd.BufferClose, desc = 'buffer close' },
+        { '<C-Tab>',   vim.cmd.BufferNext, desc = 'buffer next',      mode = { 'n', 'i', 't' } },
+        { '<C-S-Tab>', vim.cmd.BufferPrevious, desc = 'buffer previous',  mode = { 'n', 'i', 't' } },
+        { '<C-w>',     vim.cmd.BufferClose, desc = 'buffer close',     mode = 'n' },
+        { '<A-Left>',  vim.cmd.BufferMovePrevious, desc = 'buffer move left' },
+        { '<A-Right>', vim.cmd.BufferMoveNext, desc = 'buffer move right' },
+        { '<C-1>',     goto(1), desc = 'go to buffer 1' },
+        { '<C-2>',     goto(2), desc = 'go to buffer 2' },
+        { '<C-3>',     goto(3), desc = 'go to buffer 3' },
+        { '<C-4>',     goto(4), desc = 'go to buffer 4' },
+        { '<C-5>',     goto(5), desc = 'go to buffer 5' },
+        { '<C-6>',     goto(6), desc = 'go to buffer 6' },
+        { '<C-7>',     goto(7), desc = 'go to buffer 7' },
+        { '<C-8>',     goto(8), desc = 'go to buffer 8' },
+        { '<C-9>',     goto(9), desc = 'go to buffer 9' },
+      }
+    end,
     init = function() vim.g.barbar_auto_setup = false end,
     opts = {
       animation = true,

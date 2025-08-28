@@ -34,34 +34,15 @@ vim.diagnostic.config({
   },
 })
 
-local diag_float_win = nil
-
 -- Auto-show diagnostics on CursorHold
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
   group = vim.api.nvim_create_augroup("lsp_diagnostics_hold", { clear = true }),
   callback = function()
-    -- close previous one if still valid
-    if diag_float_win and vim.api.nvim_win_is_valid(diag_float_win) then
-      vim.api.nvim_win_close(diag_float_win, true)
-    end
-
-    local _, winid = vim.diagnostic.open_float(nil, {
+    vim.diagnostic.open_float(nil, {
       focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "CursorMovedI" },
       scope = "cursor",
     })
-
-    diag_float_win = winid
-  end,
-})
-
--- Auto-close when leaving buffer/window
-vim.api.nvim_create_autocmd({ "BufLeave", "TabLeave", "WinLeave" }, {
-  group = vim.api.nvim_create_augroup("lsp_diagnostics_close", { clear = true }),
-  callback = function()
-    if diag_float_win and vim.api.nvim_win_is_valid(diag_float_win) then
-      vim.api.nvim_win_close(diag_float_win, true)
-      diag_float_win = nil
-    end
   end,
 })
 
@@ -104,6 +85,27 @@ vim.api.nvim_create_autocmd('LspAttach', {
       })
     end
 
+    -- Highlight hovered symbol
+    if client:supports_method('textDocument/documentHighlight') then
+      vim.api.nvim_set_hl(args.buf, 'LspReferenceRead', { link = 'Search' })
+      vim.api.nvim_set_hl(args.buf, 'LspReferenceText', { link = 'Search' })
+      vim.api.nvim_set_hl(args.buf, 'LspReferenceWrite', { link = 'Search' })
+
+      vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
+      vim.api.nvim_clear_autocmds({ buffer = args.buf, group = 'lsp_document_highlight' })
+
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        group = 'lsp_document_highlight',
+        buffer = args.buf,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+        group = 'lsp_document_highlight',
+        buffer = args.buf,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+
     -- Custom LSP action menu (preserving your original functionality)
     local function lsp_buf_hover()
       vim.lsp.buf.hover({ border = "rounded", focusable = false })
@@ -120,8 +122,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
       { desc = "8.  Go to Declaration",          fn = function() vim.lsp.buf.declaration() end },
       { desc = "9. Go to Type Definition",       fn = function() vim.lsp.buf.type_definition() end },
       { desc = "10. Set Diagnostics in Loclist", fn = function() vim.diagnostic.setloclist() end },
-      { desc = "11. Go to Previous Diagnostic",  fn = function() vim.diagnostic.goto_prev() end },
-      { desc = "12. Go to Next Diagnostic",      fn = function() vim.diagnostic.goto_next() end },
+      { desc = "11. Go to Previous Diagnostic",  fn = function() vim.diagnostic.jump({ count = 1, float = true }) end },
+      { desc = "12. Go to Next Diagnostic",      fn = function() vim.diagnostic.jump({ count = -1, float = true }) end },
     }
 
     local function show_lsp_action_menu()
