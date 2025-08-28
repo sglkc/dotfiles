@@ -181,7 +181,55 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.lsp.config.vtsls.filetypes = { "vue" }
+-- User commands
+vim.api.nvim_create_user_command("LspStop", function(opts)
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+    if opts.args == "" or opts.args == client.name then
+      client:stop(true)
+      vim.notify(client.name .. ": stopped")
+    end
+  end
+end, {
+  desc = "Stop all LSP clients or a specific client",
+  nargs = "?",
+  complete = function()
+    local names = {}
+    for _, c in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+      table.insert(names, c.name)
+    end
+    return names
+  end
+})
+
+vim.api.nvim_create_user_command("LspRestart", function()
+  local detach_clients = {}
+  for _, client in ipairs(vim.lsp.get_clients({ bufnr = 0 })) do
+    client:stop(true)
+    if vim.tbl_count(client.attached_buffers) > 0 then
+      detach_clients[client.name] = { client, vim.lsp.get_buffers_by_client_id(client.id) }
+    end
+  end
+  local timer = vim.uv.new_timer()
+  if not timer then
+    return vim.notify("Servers stopped but not restarted")
+  end
+  timer:start(100, 50, vim.schedule_wrap(function()
+    for name, client in pairs(detach_clients) do
+      local client_id = vim.lsp.start(client[1].config, { attach = false })
+      if client_id then
+        for _, buf in ipairs(client[2]) do
+          vim.lsp.buf_attach_client(buf, client_id)
+        end
+        vim.notify(name .. ": restarted")
+      end
+      detach_clients[name] = nil
+    end
+    if not next(detach_clients) and not timer:is_closing() then
+      timer:close()
+    end
+  end))
+end, { desc = "Restart all LSP clients for current buffer" })
+
 -- Enable all configured servers
 local servers = {
   'basedpyright', 'gopls', 'svelte',
