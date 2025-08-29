@@ -1,3 +1,5 @@
+# vim: set filetype=gitconfig:
+
 [core]
   editor = nano
   autocrlf = input
