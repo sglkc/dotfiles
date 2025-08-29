@@ -96,18 +96,26 @@ fi
 if [[ -x "$(command -v npm)" ]]; then
   export NPM_HOME="$PACKAGE_STORE/npm"
   export PATH="$PATH:$NPM_HOME/bin"
-  eval "$(npm completion)"
+  # eval "$(npm completion)" # slow
 fi
 
 if [[ -x "$(command -v pnpm)" ]]; then
   export PNPM_HOME="$PACKAGE_STORE/pnpm"
   export PATH="$PATH:$PNPM_HOME"
-  eval "$(pnpm completion bash)"
+  # eval "$(pnpm completion bash)" # slow
 fi
 
+# TODO: cache and tool dir
 if [[ -x "$(command -v uv)" ]]; then
   export UV_HOME="$PACKAGE_STORE/uv"
-  export PATH="$PATH:$UV_HOME/bin"
+  export UV_CACHE_DIR="$UV_HOME/cache"
+  export UV_TOOL_BIN_DIR="$UV_HOME/bin"
+  export UV_TOOL_DIR="$UV_HOME/tools"
+  export UV_PYTHON_BIN_DIR="$UV_HOME/python/bin"
+  export UV_PYTHON_INSTALL_DIR="$UV_HOME/python"
+  export UV_PYTHON_CACHE_DIR="$UV_HOME/python/cache"
+  export UV_PYTHON_INSTALL_BIN=1
+  export PATH="$PATH:$UV_TOOL_BIN_DIR:$UV_PYTHON_BIN_DIR"
 fi
 
 if [[ -x "$(command -v go)" ]]; then
@@ -115,7 +123,7 @@ if [[ -x "$(command -v go)" ]]; then
   export PATH="$PATH:$GOPATH/bin"
 fi
 
-if [[ -x "$(command -v uv)" ]]; then
+if [[ -x "$(command -v composer)" ]]; then
   export COMPOSER_HOME="$PACKAGE_STORE/composer"
   export PATH="$PATH:$COMPOSER_HOME/vendor/bin"
 fi
