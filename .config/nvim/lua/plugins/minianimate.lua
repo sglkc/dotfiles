@@ -1,6 +1,6 @@
 return {
   {
-    "echasnovski/mini.animate",
+    "nvim-mini/mini.animate",
     event = 'VeryLazy',
     version = false,
     opts = function()
