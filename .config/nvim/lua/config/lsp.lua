@@ -85,26 +85,26 @@ vim.api.nvim_create_autocmd('LspAttach', {
       })
     end
 
-    -- Highlight hovered symbol
-    if client:supports_method('textDocument/documentHighlight') then
-      vim.api.nvim_set_hl(args.buf, 'LspReferenceRead', { link = 'Search' })
-      vim.api.nvim_set_hl(args.buf, 'LspReferenceText', { link = 'Search' })
-      vim.api.nvim_set_hl(args.buf, 'LspReferenceWrite', { link = 'Search' })
-
-      vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
-      vim.api.nvim_clear_autocmds({ buffer = args.buf, group = 'lsp_document_highlight' })
-
-      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-        group = 'lsp_document_highlight',
-        buffer = args.buf,
-        callback = vim.lsp.buf.document_highlight,
-      })
-      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
-        group = 'lsp_document_highlight',
-        buffer = args.buf,
-        callback = vim.lsp.buf.clear_references,
-      })
-    end
+    -- -- Highlight hovered symbol
+    -- if client:supports_method('textDocument/documentHighlight') then
+    --   vim.api.nvim_set_hl(args.buf, 'LspReferenceRead', { link = 'Search' })
+    --   vim.api.nvim_set_hl(args.buf, 'LspReferenceText', { link = 'Search' })
+    --   vim.api.nvim_set_hl(args.buf, 'LspReferenceWrite', { link = 'Search' })
+    --
+    --   vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
+    --   vim.api.nvim_clear_autocmds({ buffer = args.buf, group = 'lsp_document_highlight' })
+    --
+    --   vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+    --     group = 'lsp_document_highlight',
+    --     buffer = args.buf,
+    --     callback = vim.lsp.buf.document_highlight,
+    --   })
+    --   vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+    --     group = 'lsp_document_highlight',
+    --     buffer = args.buf,
+    --     callback = vim.lsp.buf.clear_references,
+    --   })
+    -- end
 
     -- Custom LSP action menu (preserving your original functionality)
     local function lsp_buf_hover()
