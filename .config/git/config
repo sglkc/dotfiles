@@ -41,6 +41,7 @@
   zip = archive --format=zip --output archive.zip
 
 [pull]
+  autoStash = true
   rebase = true
 
 [include]
