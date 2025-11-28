@@ -81,7 +81,7 @@ return {
         },
         find_files = {
           find_command = {
-            "rg", "--files", "--hidden", "--glob", "!**/.git/*"
+            "rg", "--files", "--hidden", "--glob", "!**/.git/* --no-ignore"
           },
         }
       },
