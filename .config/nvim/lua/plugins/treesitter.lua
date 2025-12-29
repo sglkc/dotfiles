@@ -78,9 +78,8 @@ return {
       }
     },
     config = function(_, opts)
-      local parsers = require("nvim-treesitter.parsers").get_parser_configs()
+      local parsers = require("nvim-treesitter.parsers")
       require("nvim-ts-autotag").setup()
-      require("nvim-treesitter.configs").setup(opts)
 
       parsers.blade = {
         install_info = {

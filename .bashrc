@@ -85,12 +85,12 @@ LOCAL_BIN="$HOME/.local/bin"
 [[ -d "$LOCAL_BIN" ]] && export PATH="$LOCAL_BIN:$PATH"
 
 # unified package managers location
-PACKAGE_STORE="/opt/packages"
-# Ensure /opt/packages exists and is owned by the current user
-if [[ ! -d /opt/packages ]]; then
+PACKAGE_STORE="$HOME/.cache/packages"
+# Ensure exists and is owned by the current user
+if [[ ! -d "$PACKAGE_STORE" ]]; then
   echo 'Creating package managers cache directory'
-  sudo mkdir -p /opt/packages
-  sudo chown "$USER":"$USER" /opt/packages
+  sudo mkdir -p "$PACKAGE_STORE"
+  sudo chown "$USER":"$USER" "$PACKAGE_STORE"
 fi
 
 if [[ -x "$(command -v npm)" ]]; then
