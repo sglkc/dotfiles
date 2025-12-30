@@ -118,10 +118,16 @@ if [[ -x "$(command -v uv)" ]]; then
   export PATH="$PATH:$UV_TOOL_BIN_DIR:$UV_PYTHON_BIN_DIR"
 fi
 
+# go version manager
+[ -s "${HOME}/.g/env" ] && \. "${HOME}/.g/env"
+
 if [[ -x "$(command -v go)" ]]; then
   export GOPATH="$PACKAGE_STORE/go"
   export PATH="$PATH:$GOPATH/bin"
 fi
+
+# php version manager
+[ -s "${HOME}/.phpbrew/bashrc" ] && \. "${HOME}/.phpbrew/bashrc"
 
 if [[ -x "$(command -v composer)" ]]; then
   export COMPOSER_HOME="$PACKAGE_STORE/composer"

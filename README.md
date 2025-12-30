@@ -44,6 +44,14 @@ Dependencies
   curl -fsSL https://fnm.vercel.app/install | bash
   ```
 
+- pnpm (Node.js package manager)
+
+  ```sh
+  npm i -g npm@latest
+  npm i -g pnpm@latest
+  pnpm i -g @astrojs/language-server @biomejs/biome @github/copilot @moonrepo/cli @vtsls/language-server @vue/language-server @vue/typescript-plugin basedpyright budo intelephense svelte-language-server tsx typescript vscode-langservers-extracted
+  ```
+
 - starship (shell prompt)
 
   ```sh
@@ -65,8 +73,8 @@ Dependencies
 - ripgrep (string search)
 
   ```sh
-  curl -LO https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep_14.1.0-1_amd64.deb
-  sudo dpkg -i ripgrep_14.1.0-1_amd64.deb
+  curl -LO https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep_15.1.0-1_amd64.deb
+  sudo dpkg -i ripgrep_15.1.0-1_amd64.deb
   ```
 
 - fzf (fuzzy finder)
@@ -74,4 +82,20 @@ Dependencies
   ```sh
   git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
   ~/.fzf/install
+  ```
+
+- g (golang version manager)
+
+  ```sh
+  curl -sSL https://raw.githubusercontent.com/voidint/g/master/install.sh | bash
+  go install golang.org/x/tools/gopls@latest
+  ```
+
+- php
+
+  ```sh
+  sudo apt install php
+  curl -L -O https://github.com/phpbrew/phpbrew/releases/latest/download/phpbrew.phar
+  chmod +x phpbrew.phar
+  sudo mv phpbrew.phar /usr/local/bin/phpbrew
   ```
