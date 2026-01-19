@@ -99,3 +99,9 @@ Dependencies
   chmod +x phpbrew.phar
   sudo mv phpbrew.phar /usr/local/bin/phpbrew
   ```
+
+- rustup
+
+  ```sh
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  ```

@@ -165,3 +165,6 @@ if [[ -x "$(command -v zoxide)" ]]; then
   alias cd=z
   export _ZO_DOCTOR=0
 fi
+
+# rustup for rust
+[[ -d "$HOME/.cargo" ]] && . "$HOME/.cargo/env"
