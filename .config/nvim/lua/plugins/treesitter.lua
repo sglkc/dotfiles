@@ -8,7 +8,7 @@ return {
     dependencies = {
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",
-      "jwalton512/vim-blade",
+      -- "jwalton512/vim-blade",
       {
         "andymass/vim-matchup",
         lazy = false,

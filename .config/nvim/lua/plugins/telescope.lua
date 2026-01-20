@@ -5,30 +5,11 @@ return {
       "nvim-lua/plenary.nvim",
       "nvim-telescope/telescope-ui-select.nvim",
       {
-        'DrKJeff16/project.nvim',
-        opts = {
-          silent_chdir = true,
-          patterns = {
-            "Makefile", "go.mod", "pyproject.toml",
-            "composer.json", "package.json", "node_modules",
-            ".git",
-          },
-        },
-        config = function(_, opts)
-          require('project').setup(opts)
-        end
-      },
-      {
         'nvim-telescope/telescope-fzf-native.nvim',
         build = 'make'
       },
     },
     keys = {
-      {
-        "<leader>.",
-        function() pcall(require("telescope").extensions.projects.projects) end,
-        desc = "Find files from current directory (Telescope)",
-      },
       {
         "<leader>p",
         function() require("telescope.builtin").find_files() end,
@@ -100,7 +81,6 @@ return {
     config = function(_, opts)
       require('telescope').setup(opts)
       require('telescope').load_extension('fzf')
-      require('telescope').load_extension('projects')
       require('telescope').load_extension('ui-select')
     end
   }
