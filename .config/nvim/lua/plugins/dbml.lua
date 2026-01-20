@@ -1,3 +1,4 @@
 return {
-  'jidn/vim-dbml'
+  'jidn/vim-dbml',
+  ft = 'dbml'
 }
