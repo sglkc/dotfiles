@@ -48,7 +48,7 @@ return {
         "astro", "vue",
         "php", "phpdoc",
         "sql",
-        "json", "jsonc", "markdown", "markdown_inline",
+        "json", "json5", "markdown", "markdown_inline",
         "query", "regex",
         "lua", "vim", "vimdoc", "toml", "yaml",
       },
