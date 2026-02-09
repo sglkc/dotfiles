@@ -8,12 +8,23 @@ return {
     dependencies = {
       "windwp/nvim-ts-autotag",
       "RRethy/nvim-treesitter-endwise",
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        opts = {
+          multiwindow = true, -- Enable multiwindow support.
+          max_lines = 3, -- How many lines the window should span. Values <= 0 mean no limit.
+          line_numbers = true,
+          multiline_threshold = 2, -- Maximum number of lines to show for a single context
+          trim_scope = 'inner', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+          mode = 'topline',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+        }
+      },
       -- "jwalton512/vim-blade",
       {
         "andymass/vim-matchup",
         lazy = false,
         config = function()
-          vim.g.matchup_matchparen_offscreen = { method = "popup" }
+          vim.g.matchup_matchparen_offscreen = {}
           vim.g.matchup_transmute_enabled = 1
           vim.g.matchup_delim_noskips = 1
           vim.g.matchup_delim_stopline = 1000

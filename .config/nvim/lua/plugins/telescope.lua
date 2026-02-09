@@ -37,7 +37,7 @@ return {
           vimgrep_arguments = {
             "rg", "--color=never", "--no-heading", "--with-filename",
             "--line-number", "--column", "--smart-case", "--trim", "--hidden",
-            "-g", "!**/.git/*", "-g", "!**/public/*", "-g", "!**/*.min.*"
+            "--no-ignore-dot", "-g", "!**/.git/*", "-g", "!*.min.*"
           },
           mappings = {
             i = {
@@ -62,7 +62,8 @@ return {
           },
           find_files = {
             find_command = {
-              "rg", "--files", "--hidden", "--glob", "!**/.git/* --no-ignore"
+              "rg", "--files", "--hidden", "--no-ignore-dot",
+              "-g", "!**/.git/*", "-g", "!*.min.*",
             },
           }
         },
