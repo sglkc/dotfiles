@@ -8,6 +8,9 @@ fi
 
 [ -s "/usr/share/cachyos-zsh-config/cachyos-config.zsh" ] && \. /usr/share/cachyos-zsh-config/cachyos-config.zsh
 
+# disable autocorrect
+unsetopt correct_all
+
 # auto cd if using directory
 setopt autocd
 
@@ -38,7 +41,7 @@ alias ......='cd ../../..'
 
 alias lg='lazygit'
 alias e='exit'
-alias venv='uv venv && source .venv/bin/activate'
+alias venv='uv venv --allow-existing && source .venv/bin/activate'
 
 # safe delete
 if (( $+commands[trash] )); then
@@ -52,7 +55,7 @@ if [[ "$TERM" == "xterm-kitty" ]]; then
 fi
 
 # nodejs live web server
-(( $+commands[budo] )) && alias live='budo --wg "**/*.{html,css,js,mjs}" --live'
+(( $+commands[budo] )) && alias live='budo --host localhost --wg "**/*.{html,css,js,mjs}" --live'
 
 # ------------------------------------------------------------------------------
 # Keybindings

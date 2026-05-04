@@ -9,7 +9,7 @@
   tool = vimdiff
 
 [credential]
-  helper = cache
+	helper = manager
 
 [safe]
   directory = *
@@ -45,7 +45,4 @@
   rebase = true
 
 [include]
-  path = ~/.config/git/profiles/github
-
-[includeIf "hasconfig:remote.*.url:git@gitlab.zero-one-group.com:*/**"]
-  path = ~/.config/git/profiles/zero-one-group
+  path = ~/.config/git/profiles/config
