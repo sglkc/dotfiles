@@ -11,3 +11,17 @@ promptToReturnFromSubprocess: false
 
 git:
   overrideGpg: true
+
+customCommands:
+  - key: d
+    description: Amend commit date
+    context: commitMessage
+    prompts:
+      - key: Timestamp
+        type: input
+        initialValue: "{{.SelectedCommit.CommitterDate}}"
+        label: New date (RFC3339)
+    command: >
+      {{$date := .Form.Timestamp}}
+      {{$rebase := runCommand "ls -d .git/rebase-merge .git/rebase-apply 2>/dev/null"}}
+      GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --amend --no-edit --date {{quote $date}}{{if $rebase}} && git rebase --continue{{end}}
