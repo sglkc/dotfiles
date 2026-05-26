@@ -15,6 +15,10 @@ if [[ ! -d "$PACKAGE_STORE" ]]; then
   mkdir -p "$PACKAGE_STORE"
 fi
 
+# proto version manager
+export PROTO_HOME="$HOME/.proto"
+[[ -d "$PROTO_HOME" ]] && export PATH="$PROTO_HOME/bin:$PATH"
+
 # Node.js
 FNM_PATH="$HOME/.local/share/fnm"
 if [[ -d "$FNM_PATH" ]]; then
@@ -46,7 +50,7 @@ if (( $+commands[uv] )); then
 fi
 
 # go version manager
-[[ -s "${HOME}/.g/env" ]] && \. "${HOME}/.g/env"
+# [[ -s "${HOME}/.g/env" ]] && \. "${HOME}/.g/env"
 
 if (( $+commands[go] )); then
   export GOPATH="$PACKAGE_STORE/go"
@@ -67,9 +71,7 @@ DOTNET_DIR="$HOME/.dotnet/tools"
 
 # android studio from apt
 export ANDROID_HOME="/usr/lib/android-sdk"
-if [[ -d "$ANDROID_HOME" ]]; then
-  export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin:$PATH"
-fi
+[[ -d "$ANDROID_HOME" ]] && export PATH="$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools/bin:$PATH"
 
 # rustup for rust
 [[ -s "$HOME/.cargo/env" ]] && \. "$HOME/.cargo/env"
