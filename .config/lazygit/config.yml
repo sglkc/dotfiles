@@ -25,8 +25,18 @@ customCommands:
       {{$date := .Form.Timestamp}}
       {{$sha := .SelectedCommit.Sha}}
       {{$rebase := runCommand "ls -d .git/rebase-merge .git/rebase-apply 2>/dev/null"}}
-      {{if $rebase}}
-        GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --amend --no-edit --date {{quote $date}} && git rebase --continue
-      {{else}}
-        GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --fixup={{$sha}} --date {{quote $date}} && git rebase --autosquash {{$sha}}^
-      {{end}}
+      orig=$(git rev-parse HEAD) &&
+      (git stash --include-untracked || true) &&
+      (
+        {{if $rebase}}
+          GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --amend --no-edit --date {{quote $date}} && git rebase --continue
+        {{else}}
+          GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --fixup={{$sha}} --date {{quote $date}} && git rebase --autosquash {{$sha}}^
+        {{end}}
+      ) && git stash pop || {
+        git rebase --abort 2>/dev/null || true
+        git reset --hard $orig
+        git stash pop 2>/dev/null || git stash drop 2>/dev/null || true
+        echo "FAILED: rebase conflict or error - workspace restored"
+        exit 1
+      }
