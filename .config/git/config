@@ -8,9 +8,6 @@
 [diff]
   tool = vimdiff
 
-[credential]
-	helper = manager
-
 [safe]
   directory = *
 
@@ -43,6 +40,10 @@
 [pull]
   autoStash = true
   rebase = true
+
+# Always use SSH for GitHub repositories
+[url "git@github.com:"]
+  insteadOf = https://github.com/
 
 [include]
   path = ~/.config/git/profiles/config
