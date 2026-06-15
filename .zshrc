@@ -42,6 +42,7 @@ alias ......='cd ../../..'
 alias lg='lazygit'
 alias e='exit'
 alias venv='uv venv --allow-existing && source .venv/bin/activate'
+alias csvlens='csvlens -i --colorful'
 
 # safe delete
 if (( $+commands[trash] )); then

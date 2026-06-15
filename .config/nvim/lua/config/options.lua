@@ -51,3 +51,6 @@ opt.pumheight = 20
 opt.laststatus = 3
 -- opt.pumblend=10
 -- opt.winblend=10
+
+-- FOLDING
+opt.foldmethod = 'marker'

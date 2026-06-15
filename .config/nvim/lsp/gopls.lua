@@ -91,7 +91,7 @@ return {
   end,
   settings = {
     gopls = {
-      buildFlags = { '-tags=debug' }
+      buildFlags = { '-tags=debug,integration' }
     }
   },
 }
