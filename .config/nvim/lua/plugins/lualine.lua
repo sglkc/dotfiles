@@ -2,6 +2,7 @@ return {
   {
     "nvim-lualine/lualine.nvim",
     dependencies = {
+      "folke/tokyonight.nvim",
       "nvim-tree/nvim-web-devicons",
       {
         "linrongbin16/lsp-progress.nvim",
