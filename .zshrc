@@ -68,10 +68,6 @@ bindkey '^H' backward-kill-word
 # Tool Initializations & Completions
 # ------------------------------------------------------------------------------
 
-if (( $+commands[fnm] )); then
-  eval "$(fnm env)"
-fi
-
 # if (( $+commands[npm] )); then
 #   eval "$(npm completion)" # slow
 # fi
