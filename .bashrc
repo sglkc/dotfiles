@@ -134,10 +134,6 @@ if [[ -x "$(command -v composer)" ]]; then
   export PATH="$PATH:$COMPOSER_HOME/vendor/bin"
 fi
 
-# dotnet
-DOTNET_DIR="$HOME/.dotnet/tools"
-[[ -d "$DOTNET_DIR" ]] && export PATH="$PATH:$DOTNET_DIR"
-
 # fnm
 FNM_PATH="$HOME/.local/share/fnm"
 if [ -d "$FNM_PATH" ]; then

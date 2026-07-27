@@ -1,5 +1,18 @@
 # https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
 
+gui:
+  # The number of lines you scroll by when scrolling the main window
+  scrollHeight: 10
+
+  # If true, allow scrolling past the bottom of the content in the main window
+  scrollPastBottom: true
+
+  # See https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md#scroll-off-margin
+  scrollOffMargin: 2
+
+  # One of: 'margin' (default) | 'jump'
+  scrollOffBehavior: margin
+
 # If true, exit Lazygit when the user presses escape in a context where there is nothing to cancel/close
 quitOnTopLevelReturn: true
 
@@ -13,30 +26,25 @@ git:
   overrideGpg: true
 
 customCommands:
-  - key: d
-    description: Amend commit date
-    context: commitMessage
+  # Uses /home/seya/code/lazygit-date-cmd-test/bin/set-commit-dates
+  # (same binary the harness cases exercise).
+  - key: 'D'
+    context: 'commits, subCommits'
+    description: 'Set author/committer dates'
+    loadingText: 'Setting dates...'
     prompts:
-      - key: Timestamp
-        type: input
-        initialValue: "{{.SelectedCommit.CommitterDate}}"
-        label: New date (RFC3339)
-    command: >
-      {{$date := .Form.Timestamp}}
-      {{$sha := .SelectedCommit.Sha}}
-      {{$rebase := runCommand "ls -d .git/rebase-merge .git/rebase-apply 2>/dev/null"}}
-      orig=$(git rev-parse HEAD) &&
-      (git stash --include-untracked || true) &&
-      (
-        {{if $rebase}}
-          GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --amend --no-edit --date {{quote $date}} && git rebase --continue
-        {{else}}
-          GIT_AUTHOR_DATE={{$date}} GIT_COMMITTER_DATE={{$date}} git commit --fixup={{$sha}} --date {{quote $date}} && git rebase --autosquash {{$sha}}^
-        {{end}}
-      ) && git stash pop || {
-        git rebase --abort 2>/dev/null || true
-        git reset --hard $orig
-        git stash pop 2>/dev/null || git stash drop 2>/dev/null || true
-        echo "FAILED: rebase conflict or error - workspace restored"
-        exit 1
-      }
+      - type: input
+        title: 'Author date (e.g. 2024-01-15 10:30:00)'
+        key: AuthorDate
+        # Selected commit author time (not "now"), no timezone.
+        # printf is a Go template builtin; %% becomes a literal % for git.
+        initialValue: '{{ runCommand (printf "git -c log.showSignature=false log -1 --format=%%ad --date=format:%%Y-%%m-%%d\\ %%H:%%M:%%S %s" .SelectedCommit.Hash) }}'
+      - type: input
+        title: 'Committer date (blank = same as author)'
+        key: CommitterDate
+        initialValue: '{{ runCommand (printf "git -c log.showSignature=false log -1 --format=%%cd --date=format:%%Y-%%m-%%d\\ %%H:%%M:%%S %s" .SelectedCommit.Hash) }}'
+    command: |
+      /home/seya/code/lazygit-date-cmd-test/bin/set-commit-dates \
+        --hash {{.SelectedCommit.Hash | quote}} \
+        --author-date {{.Form.AuthorDate | quote}} \
+        {{ if .Form.CommitterDate }}--committer-date {{.Form.CommitterDate | quote}}{{ end }}
