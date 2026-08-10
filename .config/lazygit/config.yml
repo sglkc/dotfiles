@@ -26,8 +26,6 @@ git:
   overrideGpg: true
 
 customCommands:
-  # Uses /home/seya/code/lazygit-date-cmd-test/bin/set-commit-dates
-  # (same binary the harness cases exercise).
   - key: 'D'
     context: 'commits, subCommits'
     description: 'Set author/committer dates'
@@ -44,7 +42,7 @@ customCommands:
         key: CommitterDate
         initialValue: '{{ runCommand (printf "git -c log.showSignature=false log -1 --format=%%cd --date=format:%%Y-%%m-%%d\\ %%H:%%M:%%S %s" .SelectedCommit.Hash) }}'
     command: |
-      /home/seya/code/lazygit-date-cmd-test/bin/set-commit-dates \
+      ~/.config/lazygit/set-commit-dates \
         --hash {{.SelectedCommit.Hash | quote}} \
         --author-date {{.Form.AuthorDate | quote}} \
         {{ if .Form.CommitterDate }}--committer-date {{.Form.CommitterDate | quote}}{{ end }}

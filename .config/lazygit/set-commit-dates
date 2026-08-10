@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Set author and/or committer dates on a commit (HEAD or older).
+#
+# Usage:
+#   set-commit-dates --hash <hash> --author-date <date> [--committer-date <date>]
+#
+# Dates are anything git accepts (e.g. "2021-06-15 09:00:00").
+# If --committer-date is omitted, it defaults to the author date.
+#
+# Handles a dirty worktree by stashing (incl. untracked) and popping after.
+# Rewrites the target commit and all descendants (new SHAs).
+# Merge commits are rejected as the target (they can still appear as descendants).
+#
+# Signing:
+#   HEAD uses `git commit --amend -S` when commit.gpgsign=true.
+#   Older commits use filter-branch with `git commit-tree -S` so rewritten
+#   commits are signed. (Plain env-filter alone uses unsigned commit-tree.)
+
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE' >&2
+Usage: set-commit-dates --hash <hash> --author-date <date> [--committer-date <date>]
+
+  --hash            Commit to rewrite (full or abbreviated hash)
+  --author-date     New author date (git date format)
+  --committer-date  New committer date (defaults to author date)
+USAGE
+  exit 2
+}
+
+hash=""
+author_date=""
+committer_date=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --hash) hash="${2:-}"; shift 2 ;;
+    --author-date) author_date="${2:-}"; shift 2 ;;
+    --committer-date) committer_date="${2:-}"; shift 2 ;;
+    -h|--help) usage ;;
+    *) echo "Unknown arg: $1" >&2; usage ;;
+  esac
+done
+
+[[ -n "$hash" && -n "$author_date" ]] || usage
+[[ -n "$committer_date" ]] || committer_date="$author_date"
+
+hash="$(git rev-parse --verify "${hash}^{commit}")"
+head="$(git rev-parse HEAD)"
+
+stash_created=0
+
+cleanup() {
+  local ec=$?
+  if [[ "$stash_created" -eq 1 ]]; then
+    if ! git stash pop -q; then
+      echo "warning: stash pop failed; changes may still be on the stash stack" >&2
+      [[ $ec -eq 0 ]] && ec=1
+    fi
+  fi
+  exit "$ec"
+}
+trap cleanup EXIT
+
+if ! git diff --quiet || ! git diff --cached --quiet || \
+   [[ -n "$(git ls-files --others --exclude-standard)" ]]; then
+  git stash push -u -q -m "set-commit-dates: temporary stash"
+  stash_created=1
+fi
+
+parent_count="$(git rev-list --parents -n 1 "$hash" | awk '{print NF-1}')"
+if [[ "$parent_count" -gt 1 ]]; then
+  echo "error: merge commits are not supported" >&2
+  exit 1
+fi
+
+# Effective config (local overrides global). Explicit -S when enabled.
+sign_args=()
+if [[ "$(git config --bool commit.gpgsign 2>/dev/null || echo false)" == "true" ]]; then
+  sign_args=(-S)
+fi
+
+amend_dates() {
+  # --date sets author date; GIT_COMMITTER_DATE sets committer date.
+  GIT_COMMITTER_DATE="$committer_date" \
+    git commit --amend --no-edit --date="$author_date" \
+      --allow-empty --allow-empty-message \
+      ${sign_args[@]+"${sign_args[@]}"} -q
+}
+
+if [[ "$hash" == "$head" ]]; then
+  amend_dates
+  exit 0
+fi
+
+# filter-branch env-filter adjusts dates; commit-filter builds each new object.
+# Without -S, commit-tree produces unsigned commits even when commit.gpgsign=true
+# (that setting only applies to `git commit`, not commit-tree).
+export FILTER_BRANCH_SQUELCH_WARNING=1
+
+# shellcheck disable=SC2016
+env_filter=$(cat <<FILTER
+if [ "\$GIT_COMMIT" = "$hash" ]; then
+  export GIT_AUTHOR_DATE="$author_date"
+  export GIT_COMMITTER_DATE="$committer_date"
+fi
+FILTER
+)
+
+if [[ ${#sign_args[@]} -gt 0 ]]; then
+  commit_filter='git commit-tree -S "$@"'
+else
+  commit_filter='git commit-tree "$@"'
+fi
+
+if [[ "$parent_count" -eq 0 ]]; then
+  git filter-branch -f \
+    --env-filter "$env_filter" \
+    --commit-filter "$commit_filter" \
+    HEAD
+else
+  git filter-branch -f \
+    --env-filter "$env_filter" \
+    --commit-filter "$commit_filter" \
+    "${hash}^..HEAD"
+fi
+
+# Drop the backup refs filter-branch keeps under refs/original.
+if [[ -n "$(git for-each-ref refs/original 2>/dev/null)" ]]; then
+  git for-each-ref --format='%(refname)' refs/original | while read -r ref; do
+    git update-ref -d "$ref"
+  done
+fi
